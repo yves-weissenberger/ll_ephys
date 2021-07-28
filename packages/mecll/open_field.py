@@ -48,7 +48,7 @@ def get_occupancy_map(position,sigma=25,dd_=100,tot_pix_size=[1000,1000]):
             pass   
     return occupancy_arr
 
-def split_occupancy_map(position,n_splits=8,sigma=25,dd=100,tot_pix_size=[1000,1000]):
+def split_occupancy_map(position,n_splits=8,sigma=25,dd_=100,tot_pix_size=[1000,1000]):
     """ split the data into n_splits and calculate occupancy maps for each part
         of the data.
     """

@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 import cv2
-
+import time
 
 def extract_position_from_video(path,save_path=None,verbose=0):
     """ Function that extracts the position of the

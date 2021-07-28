@@ -16,7 +16,10 @@ def extract_position_from_video(path,save_path=None,verbose=0):
         success,image = vidcap.read()
         img2 = image[30:-230,360:-210,0]
         ret,thresh = cv2.threshold(img2,20,255,1)
-        pos = np.median(np.vstack(np.where(thresh>0)),axis=1)
+        if np.any(thresh>0) and not np.sum(thresh>1000):
+            pos = np.median(np.vstack(np.where(thresh>0)),axis=1)
+        else:
+            pos = [np.nan,np.nan]
         position.append(pos)
         sys.stdout.write("\rframeNR:{:.2f}  | iter speed:{:.4f}".format(count,(time.time()-st)/float(count)))
         sys.stdout.flush()
@@ -57,7 +60,7 @@ def split_occupancy_map(position,n_splits=8,sigma=25,dd=100,tot_pix_size=[1000,1
                                  dd_=dd_,
                                  tot_pix_size=tot_pix_size)
         occupancy_maps.append(tmp_)
-    tmp_ = get_occupany_map(n_splits*split_size:)
+    tmp_ = get_occupany_map(position[n_splits*split_size:])
     occupancy_maps.append(tmp_)
     return np.array(occupancy_maps)
 

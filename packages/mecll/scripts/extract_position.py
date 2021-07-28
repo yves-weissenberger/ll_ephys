@@ -1,9 +1,16 @@
 import numpy as np
-import cv2
+#import cv2
 import sys
 import os
 import re
-from .mecLL.open_field import extract_position_from_video, get_occupancy_map, split_occupancy_map
+import sys
+import os
+
+#PACKAGE_PARENT = '..'
+package_dir = os.path.split(os.path.split(os.path.abspath(__file__))[0])[0]
+sys.path.append(package_dir)
+
+from open_field import extract_position_from_video, get_occupancy_map, split_occupancy_map
 
 
 if __name__== "__main__":

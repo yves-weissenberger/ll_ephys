@@ -44,4 +44,22 @@ def get_occupancy_map(position,sigma=25,dd_=100,tot_pix_size=[1000,1000]):
             pass   
     return occupancy_arr
 
-def split_occupancy_map(position,sigma,dd_, tot_pix_size=[1000,1000])
+def split_occupancy_map(position,n_splits=8,sigma=25,dd=100,tot_pix_size=[1000,1000]):
+    """ split the data into n_splits and calculate occupancy maps for each part
+        of the data.
+    """
+    len_position = position.shape[0]
+    split_size= np.floor(len_position/n_splits)
+    occupancy_maps = []
+    for i in range(n_splits-1):
+        tmp_ = get_occupancy_map(position[i*split_size:(i+1)*split_size],
+                                 sigma=sigma,
+                                 dd_=dd_,
+                                 tot_pix_size=tot_pix_size)
+        occupancy_maps.append(tmp_)
+    tmp_ = get_occupany_map(n_splits*split_size:)
+    occupancy_maps.append(tmp_)
+    return np.array(occupancy_maps)
+
+    
+

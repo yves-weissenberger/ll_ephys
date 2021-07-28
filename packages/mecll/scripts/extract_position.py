@@ -3,13 +3,13 @@ import cv2
 import sys
 import os
 import re
-from ..open_field import extract_position_from_video, get_occupancy_map
+from ..open_field import extract_position_from_video, get_occupancy_map, split_occupancy_map
 
 
 if __name__== "__main__":
 
     video_dir = sys.argv[1]
-    res_folder = os.path.join(video_dir,'position_res_folder')
+    res_folder = os.path.join(video_dir,'position_extracted_folder')
     if not os.path.isdir(res_folder):
         os.mkdir(res_folder)
     
@@ -26,9 +26,10 @@ if __name__== "__main__":
         for res_type in res_extensions:
             f_root = re.findall(r'(.*).mp4',f)[0]
 
-            if any((f_root + res_type) not in processed_data):
+            if any([(f_root + res_type) not in processed_data for res_type in res_extensions]):
                 video_path = os.path.join(video_dir,vf)
                 position = extract_position_from_video
+                occ_map = split_occupancy_map(position)
                 
             else:
                 pass

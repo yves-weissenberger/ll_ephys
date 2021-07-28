@@ -32,7 +32,7 @@ if __name__== "__main__":
             big_arena = 'OFB' in vf  #adjust sizes of everything. Also need to do a calibration
             
             for res_type in res_extensions:
-                f_root = re.findall(r'(.*).mp4',f)[0]
+                f_root = re.findall(r'(.*).mp4',vf)[0]
 
                 if any([(f_root + res_type) not in processed_data for res_type in res_extensions]):
                     video_path = os.path.join(video_dir,vf)

@@ -53,7 +53,7 @@ def split_occupancy_map(position,n_splits=8,sigma=25,dd=100,tot_pix_size=[1000,1
         of the data.
     """
     len_position = position.shape[0]
-    split_size= np.floor(len_position/n_splits)
+    split_size= int(np.floor(len_position/n_splits))
     occupancy_maps = []
     for i in range(n_splits-1):
         tmp_ = get_occupancy_map(position[i*split_size:(i+1)*split_size],

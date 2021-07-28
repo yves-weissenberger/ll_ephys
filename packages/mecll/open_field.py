@@ -61,7 +61,7 @@ def split_occupancy_map(position,n_splits=8,sigma=25,dd_=100,tot_pix_size=[1000,
                                  dd_=dd_,
                                  tot_pix_size=tot_pix_size)
         occupancy_maps.append(tmp_)
-    tmp_ = get_occupany_map(position[n_splits*split_size:])
+    tmp_ = get_occupancy_map(position[n_splits*split_size:])
     occupancy_maps.append(tmp_)
     return np.array(occupancy_maps)
 

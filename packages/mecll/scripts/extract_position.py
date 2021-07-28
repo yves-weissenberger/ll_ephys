@@ -24,7 +24,7 @@ if __name__== "__main__":
 
     video_files = [i for i in os.listdir(video_dir) if '.mp4' in i]
 
-    res_extensions = ['_positions.npy','occupany_maps.npy']
+    res_extensions = ['_positions.npy','_occupany_maps.npy']
 
     unprocessed_videos = []
     for vf in video_files:
@@ -37,10 +37,10 @@ if __name__== "__main__":
 
                 if any([(f_root + res_type) not in processed_data for res_type in res_extensions]):
                     video_path = os.path.join(video_dir,vf)
-                    position = extract_position_from_video(vf)
+                    position = extract_position_from_video(video_path)
                     occ_map = split_occupancy_map(position)
-                    np.save(os.path.join(res_folder,'_positions.npy'),position)
-                    np.save(os.path.join(res_folder,'occupancy_maps.npy'),position)
+                    np.save(os.path.join(res_folder,vf+'_positions.npy'),position)
+                    np.save(os.path.join(res_folder,vf+'_occupancy_maps.npy'),position)
 
 
 

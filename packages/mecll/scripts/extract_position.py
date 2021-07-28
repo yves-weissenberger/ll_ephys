@@ -36,7 +36,7 @@ if __name__== "__main__":
 
                 if any([(f_root + res_type) not in processed_data for res_type in res_extensions]):
                     video_path = os.path.join(video_dir,vf)
-                    position = extract_position_from_video
+                    position = extract_position_from_video(vf)
                     occ_map = split_occupancy_map(position)
 
                 else:

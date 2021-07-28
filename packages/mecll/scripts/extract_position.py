@@ -21,17 +21,19 @@ if __name__== "__main__":
 
     unprocessed_videos = []
     for vf in video_files:
-        big_arena = 'OFB' in vf  #adjust sizes of everything. Also need to do a calibration
-        
-        for res_type in res_extensions:
-            f_root = re.findall(r'(.*).mp4',f)[0]
+        if 'OF' in vf:
+            big_arena = 'OFB' in vf  #adjust sizes of everything. Also need to do a calibration
+            
+            for res_type in res_extensions:
+                f_root = re.findall(r'(.*).mp4',f)[0]
 
-            if any([(f_root + res_type) not in processed_data for res_type in res_extensions]):
-                video_path = os.path.join(video_dir,vf)
-                position = extract_position_from_video
-                occ_map = split_occupancy_map(position)
-                
-            else:
-                pass
-                
+                if any([(f_root + res_type) not in processed_data for res_type in res_extensions]):
+                    video_path = os.path.join(video_dir,vf)
+                    position = extract_position_from_video
+                    occ_map = split_occupancy_map(position)
+
+                else:
+                    pass
+        else:
+            pass                
 

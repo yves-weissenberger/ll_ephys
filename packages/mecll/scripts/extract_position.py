@@ -3,7 +3,7 @@ import cv2
 import sys
 import os
 import re
-from ..open_field import extract_position_from_video, get_occupancy_map, split_occupancy_map
+from .mecLL.open_field import extract_position_from_video, get_occupancy_map, split_occupancy_map
 
 
 if __name__== "__main__":

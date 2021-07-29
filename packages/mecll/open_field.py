@@ -15,18 +15,19 @@ def extract_position_from_video(path,save_path=None,verbose=0):
     st = time.time()
     while success:
         success,image = vidcap.read()
-        img2 = image[30:-230,360:-210,0]
-        ret,thresh = cv2.threshold(img2,20,255,1)
-        if np.any(thresh>0) and not np.sum(thresh>1000):
-            pos = np.median(np.vstack(np.where(thresh>0)),axis=1)
-        else:
-            pos = [np.nan,np.nan]
-        position.append(pos)
-        sys.stdout.write("\rframeNR:{:.2f}  | iter speed:{:.4f}".format(count,(time.time()-st)/float(count)))
-        sys.stdout.flush()
-        #break
-        #print('Read a new frame: ', success)
-        count += 1
+        if success:
+            img2 = image[30:-230,360:-210,0]
+            ret,thresh = cv2.threshold(img2,20,255,1)
+            if np.any(thresh>0) and not np.sum(thresh>1000):
+                pos = np.median(np.vstack(np.where(thresh>0)),axis=1)
+            else:
+                pos = [np.nan,np.nan]
+            position.append(pos)
+            sys.stdout.write("\rframeNR:{:.2f}  | iter speed:{:.4f}".format(count,(time.time()-st)/float(count)))
+            sys.stdout.flush()
+            #break
+            #print('Read a new frame: ', success)
+            count += 1
     return np.array(position)
 
 

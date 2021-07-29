@@ -12,6 +12,7 @@ def extract_position_from_video(path,save_path=None,verbose=0):
     success,image = vidcap.read()
     count = 1
     position = []
+    
     st = time.time()
     while success:
         success,image = vidcap.read()

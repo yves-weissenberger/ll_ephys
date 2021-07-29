@@ -41,7 +41,7 @@ if __name__== "__main__":
                     position = extract_position_from_video(video_path)
                     occ_map = split_occupancy_map(position)
                     np.save(os.path.join(res_folder,vf+'_positions.npy'),position)
-                    np.save(os.path.join(res_folder,vf+'_occupancy_maps.npy'),position)
+                    np.save(os.path.join(res_folder,vf+'_occupancy_maps.npy'),np.dstack(occ_map))
 
 
 

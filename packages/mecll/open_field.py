@@ -2,7 +2,9 @@ import numpy as np
 import sys
 import cv2
 import time
-#import tdqm
+import numba
+from numba import jit
+
 
 def extract_position_from_video(path,save_path=None,verbose=0):
     """ Function that extracts the position of the
@@ -71,10 +73,14 @@ def split_occupancy_map(position,n_splits=8,sigma=25,dd_=100,tot_pix_size=[1000,
 
 
 
-def gaussian_kernel(win_size, sigma):
+def gaussian_kernel_LEGACY(win_size, sigma):
     t = np.arange(win_size)
     x, y = np.meshgrid(t, t)
     o = (win_size - 1) / 2
     r = np.sqrt((x - o)**2 + (y - o)**2)
     scale = 1 / (sigma**2 * 2 * np.pi)
     return scale * np.exp(-0.5 * (r / sigma)**2)
+
+
+
+

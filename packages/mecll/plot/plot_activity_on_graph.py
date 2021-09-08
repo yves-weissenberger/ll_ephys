@@ -80,3 +80,32 @@ def plot_activity_on_graph(sequence,graph_type,order='poke',spks=None,node_size=
         label_seq = dict([(seq_inv[i],i) for i in range(9)])
         pos_ = nx.drawing.layout.circular_layout(G)
         nx.draw_networkx_labels(G,pos_, label_seq)
+
+
+
+def plot_cell(ix,all_resps_g1,all_resps_g2,all_poke_dict,norm=False,norm_pct=90):
+    plt.figure(figsize=(12,4))
+    n_plot = 1
+    ctr = 0
+    resps_state_g1 = all_resps_g1[:,all_poke_dict[0]['seq']]
+    resps_state_g2 = all_resps_g2[:,all_poke_dict[1]['seq']]
+
+    if norm:
+        mx = np.percentile(np.concatenate([all_resps_g1[ix],all_resps_g2[ix]]),norm_pct)
+    else:
+        mx = None
+    plt.subplot(n_plot,4,4*ctr+1)
+    spks = all_resps_g1[ix]
+    plot_activity_on_graph(all_poke_dict[0]['seq'],'line',spks=spks,order='poke',mx=mx)
+    plt.subplot(n_plot,4,4*ctr+2)
+    spks = all_resps1_g2[ix]
+    plot_activity_on_graph(all_poke_dict[1]['seq'],'line',spks=spks,order='poke',mx=mx)
+
+    plt.subplot(n_plot,4,4*ctr+3)
+    spks = resps_state_g1[ix]
+    plot_activity_on_graph(all_poke_dict[0]['seq'],'line',spks=spks,order='state',mx=mx)
+    plt.subplot(n_plot,4,4*ctr+4)
+    spks = resps_state_g2[ix]
+    plot_activity_on_graph(all_poke_dict[1]['seq'],'line',spks=spks,order='state',mx=mx)
+    
+    ctr +=1

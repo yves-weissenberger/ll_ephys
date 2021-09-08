@@ -1,9 +1,11 @@
 import numpy as np
+import re
+
 
 def build_spike_array(spkT,spkC):
+    pass
 
-
-def get_all_resps(aligner,poke_dict,single_units,spkT,spkC,window0=3000,window1=6000):
+def get_all_resps(aligner,poke_dict,single_units,spkT,spkC,window0=9000,window1=9000,get_time_mean=True):
     """ This code gets the average response of all cells to pokes in a single task block
     """
     all_resps = []
@@ -33,8 +35,20 @@ def get_all_resps(aligner,poke_dict,single_units,spkT,spkC,window0=3000,window1=
                     
                     #this is a block of code to split the data in half, useful for looking at stability when you
                     #only have one task block
-                    nSpikes = len(np.where(np.logical_and(spk_unit>(tpk-window0),spk_unit<(tpk+window1)))[0])
-                    firing_rate = scaleF*float(nSpikes)
+                    
+                    
+                    spike_locs = np.where(np.logical_and(spk_unit>(tpk-window0),spk_unit<(tpk+window1)))[0]
+
+                    #spike_locs = np.where(np.logical_and(spk_unit>(tpk),spk_unit<(tpk+window1)))[0]
+                    #spike_locs_pre = np.where(np.logical_and(spk_unit>(tpk-window0),spk_unit<(tpk)))[0]
+
+                    if get_time_mean:
+                        nSpikes = len(spike_locs)
+                        firing_rate = scaleF*float(nSpikes)
+                    else:
+                        spikes = np.zeros(window0+window1)
+                        spikes[spike_locs-tpk-window0] = 1
+                        firing_rate = spikes
                     
                     if pk_ix<=half_npks:
                         resps2[key].append(firing_rate)

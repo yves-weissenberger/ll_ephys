@@ -76,3 +76,45 @@ def get_mean_resps(all_resps_single_trial):
         var_g1.append(tmp_var)
 
     return np.array(mu_g1),np.array(var_g1)
+
+
+def get_activity_for_each_poke(df, spkT, spkC, single_units, aligner, window0=3000, window1=6000):
+    """ 
+    This function takes in dataframes like the one produced by proc_beh.build_poke_df
+    and returns spiking of all neurons searched for in single_units. Need to update this to
+    include indicies that are not nans
+
+    """
+
+    poke_dict ={}
+
+    for port_nr in np.unique(df['port'].values):
+        v = df.loc[(df['port']==port_nr)]['time'].values
+        poke_dict[str(port_nr)] = [float(i) for i in v]
+
+
+    #st = time.time()
+    used_pokes = np.zeros(len(df))
+    
+    scaleF = (window0+window1)/30000.
+    all_spk_store = []
+
+    for unit in single_units:#
+        spk_unit = spkT[np.where(spkC==unit)[0]] #select all spikes that belong to this cell
+        spk_store = []
+        for nr,row in df.iterrows():
+            aligned_T = aligner.B_to_A(row['time'])
+            
+            if not np.isnan(aligned_T):
+
+                tpk = aligned_T
+                spike_locs = np.logical_and(spk_unit>(tpk-window0),spk_unit<(tpk+window1))
+                nSpikes = len(np.where(spike_locs)[0])
+                firing_rate = scaleF*float(nSpikes)
+                spk_store.append(firing_rate)
+                used_pokes[nr] = 1
+            else:
+                spk_store.append(np.nan)
+        all_spk_store.append(spk_store)
+
+    return np.array(all_spk_store)

@@ -1,6 +1,8 @@
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
+import matplotlib
+from ..proc_beh import get_all_transitions, get_transitions_state
 
 def plot_activity_on_graph(sequence,graph_type,order='poke',spks=None,node_size=512,mx=None,mn=None):
     """ This plots all transitions based on the final sequence
@@ -47,7 +49,7 @@ def plot_activity_on_graph(sequence,graph_type,order='poke',spks=None,node_size=
         
     seq_inv = [sequence.index(i) for i in range(9)]
     if order=='poke':
-        all_transitions = get_all_transition(sequence,graph_type)
+        all_transitions = get_all_transitions(sequence,graph_type)
     elif order=='state':
         all_transitions = get_transitions_state(graph_type)
     #print(all_transitions)

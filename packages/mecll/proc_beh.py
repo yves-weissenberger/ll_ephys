@@ -17,6 +17,7 @@ def build_poke_df(lines,events,sync_thing=0):
     target_hist = []
     rew_hist = []
     current_block_number = -1
+    RT = 0
     for ctr_,l in enumerate(lines):
         if 'task_number'in l:
             #if poke_dict is not None:
@@ -60,7 +61,15 @@ def build_poke_df(lines,events,sync_thing=0):
             target_hist.append(target)
             
                 
-                
+            #print(current_sequence)
+            if len(rew_hist)>1:
+                if len(df)>1:
+                    if current_is_repeat:
+                        RT = None
+                    else:
+                        #df.loc[len(df)-1,'outgoing_angle'] = incoming_angle
+                        RT = t_ - df.iloc[-1]['time']
+                    
             
             #print(current_sequence)
             if len(rew_hist)>2:
@@ -78,7 +87,7 @@ def build_poke_df(lines,events,sync_thing=0):
                           'block_nr':current_block_number,
                           'task_repeat_nr': int(np.floor(current_block_number/2)),
                           'frac_corr': None,
-                          'RT':None,
+                          'RT':RT,
                           'time':t_,
                           'current_sequence': current_sequence,
                           'graph_type': current_graph_type,
@@ -153,7 +162,7 @@ def get_transitions_state(graph_type):
         all_transitions.append(str(pk[0])+'_'+str(pk[1]))
     return all_transitions
 
-def get_all_transition(seq,graph_type):
+def get_all_transitions(seq,graph_type):
     """
     What is says on the tin. Returns a list of strings describing transitions that
     is analogous to what is stored in dataframe obtained by running build_df

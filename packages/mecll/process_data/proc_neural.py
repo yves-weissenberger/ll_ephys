@@ -5,6 +5,8 @@ from .utils import align_activity
 
 
 def build_spike_array(spk_join,dicts):
+    """ This function takes in a series of events and return
+    """
     n_timepoints = 25
     n_neurons = len((list(set(spk_join[0]))))
 

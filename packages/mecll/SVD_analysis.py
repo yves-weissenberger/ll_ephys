@@ -2,6 +2,16 @@ import numpy as np
 from scipy.ndimage import gaussian_filter1d
 
 def variance_explained_U(store_ref,store_cv,store_alt):
+    """ 
+    Arguments:
+    =====================
+    store_ref: np.array
+               this is what you do SVD on (n_neurons x n_timepoints)
+    store_cv:  np.array
+               this is (n_neurons x n_timepoints) array from the same task
+    store_alt: np.array
+               this is (n_neurons x n_timepoints) array from the other task
+    """
     U,S,V = np.linalg.svd(store_ref)
     
     #calculate explained variance explained by U

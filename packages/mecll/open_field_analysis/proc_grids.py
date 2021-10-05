@@ -283,3 +283,12 @@ def process_grid_data(spatial_firing):
     res['grid_score'] = grid_scores
     return res
 
+
+
+def classify_grid_modules():
+    """ Here classify simultaneously recorded cells into
+        whether they are comodular or not using the method 
+        devised here:
+        https://pubmed.ncbi.nlm.nih.gov/26105192/"""
+    return None
+

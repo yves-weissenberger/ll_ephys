@@ -2,7 +2,7 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib
-from ..proc_beh import get_all_transitions, get_transitions_state
+from ..process_data.proc_beh import get_all_transitions, get_transitions_state
 
 def plot_activity_on_graph(sequence,graph_type,order='poke',spks=None,node_size=512,mx=None,mn=None):
     """ This plots all transitions based on the final sequence

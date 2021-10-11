@@ -1,7 +1,7 @@
 import numpy as np
 import re
 
-from .utils import align_activity
+from ..utils import align_activity
 
 
 def build_spike_array(spk_join,dicts):

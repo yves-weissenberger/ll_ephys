@@ -21,7 +21,7 @@ def has_spike_data(folder_path):
 
 def has_of_data(folder_path):
     
-    conditions = (file_specs_in_folder(['pinstate','positions.npy'],folder_path) + 
+    conditions = (file_specs_in_folder(['OF_camera_timestamps.csv','OF_positions.npy'],folder_path) + 
                   files_in_folder(['timestamps_OF.npy'],folder_path) )
     return conditions
 

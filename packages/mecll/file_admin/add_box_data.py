@@ -33,8 +33,10 @@ if __name__ == '__main__':
             subject = get_session_subject(foldr)
             subject_behaviour_folder = os.path.join(behaviour_dir,'mecLL_'+subject)
             beh_path, min_dt = get_behaviour_file(full_folder,subject_behaviour_folder)
+            
+            target_file_path = 'task_file_' + os.path.split(beh_path)[1]
             copy_file_to(source_path=beh_path,
-                target_path=os.path.join(full_folder,os.path.split(beh_path)[1]))
+                target_path=os.path.join(full_folder,target_file_path))
 
         else:
             print("Not processing {}".format(foldr))

@@ -1,5 +1,6 @@
 from . import task
 from . import rsync
+from . import file_admin
 #from . import proc_beh
 from . import GLM
 from .analyses import test_periodicity

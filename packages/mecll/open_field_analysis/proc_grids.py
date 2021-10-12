@@ -54,7 +54,7 @@ def calculate_firing_rate_for_cluster_parallel(spike_positions,smooth, positions
 
 def get_rate_map_nolan(unit_nr,aligner,spkC,spkT,position,smooth=30,n_bins=45,min_dwell=5,min_dwell_distance_pixels=20,dt_position_ms=1):
 
-    
+    """ Function for mapping from data to """
     number_of_bins_x = number_of_bins_y = n_bins
     mx_pos = np.nanmax(position)
     bin_size_pixels=mx_pos/number_of_bins_x
@@ -257,9 +257,6 @@ def process_grid_data(spatial_firing):
     grid_scores = []
     try:
         for ctr, firing_rate_map in enumerate(spatial_firing):
-            #firing_rate_map = #cluster.firing_maps
-            #sys.stdout.write('\r running cell: {}/{}'.format(ctr,len(spatial_firing)))
-            #sys.stdout.flush()
             rate_map_correlogram = get_rate_map_autocorrelogram(firing_rate_map)
             rate_map_correlograms.append(np.copy(rate_map_correlogram))
             field_properties = find_autocorrelogram_peaks(rate_map_correlogram)

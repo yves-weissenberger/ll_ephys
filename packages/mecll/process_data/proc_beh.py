@@ -7,9 +7,10 @@ import pandas as pd
 
 def build_poke_df(lines,events,sync_thing=0):
     
-    df = pd.DataFrame(columns=['target','port','state','task_nr','direction','in_timeout','n_timeouts','probe','correct',
+    df = pd.DataFrame(columns=['target','port','state','task_nr','direction','probe','correct',
                                'previous_port','previous_state','reward','block_nr','task_repeat_nr','port_repeat','next_correct',
                                'frac_corr','RT','time','current_sequence','graph_type' #behavioural variables
+                               #,'in_timeout','n_timeouts'
                               ]) 
     
     all_poke_dict = []
@@ -79,8 +80,8 @@ def build_poke_df(lines,events,sync_thing=0):
                           'state': current_sequence.index(int(poke)),
                           'task_nr': current_task,
                           'direction': direction,
-                          'in_timeout': False,
-                          'n_timeouts': np.nan,
+                          #'in_timeout': False,
+                          #'n_timeouts': np.nan,
                           'probe': probe,
                           'correct': poke==target,
                           'reward': n_rew==rew_hist[-2],

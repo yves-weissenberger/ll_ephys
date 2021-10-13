@@ -3,7 +3,7 @@ import re
 import sys
 import numpy as np
 import pandas as pd
-from rsync import Rsync_aligner
+from .rsync import Rsync_aligner
 
 
 
@@ -22,7 +22,7 @@ def find_task_file(root_path):
             return f
 
 
-def load_data(root_path,align_to='task'):
+def load_data(root_path,align_to='task',camera_frame_rate=30):
 
     """ 
     Arguments:
@@ -63,16 +63,17 @@ def load_data(root_path,align_to='task'):
 
     
     #load camera sync messages
-    cam_sync_path = os.path.join(root_path,'OF_camera_timestamps.csv')
-    sync_df_of = pd.read_csv(cam_sync_path,header=None)
-    sync_messages_cam = np.where((sync_df_of[0].values[1:] - sync_df_of[0].values[:-1])<0)[0].astype('float')
+    if align_to=='OF':
+        cam_sync_path = os.path.join(root_path,'OF_camera_timestamps.csv')
+        sync_df_of = pd.read_csv(cam_sync_path,header=None)
+        sync_messages_cam = np.where((sync_df_of[0].values[1:] - sync_df_of[0].values[:-1])<0)[0].astype('float')
 
     if align_to=='OF':
         sample_offset = get_n_samples_first_half(root_path)
         sync_messages_ext = sync_messages_cam
-        units_A = 30./30000
+        units_A = camera_frame_rate/30000
     else:
-        sync_messages_ext = sync_messages_task
+        sync_messages_ext = np.array(sync_messages_task)
         units_A = 1/30.
         sample_offset = 0
     #align neural and behavioural timestamps

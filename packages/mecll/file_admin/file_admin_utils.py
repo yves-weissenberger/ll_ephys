@@ -78,10 +78,10 @@ def load_stitch_info(session_data_path):
 
 def copy_file_to(source_path,target_path):
 
-    if os.path.isfile(target_path):
-        raise Exception("WARNING YOU ARE OVERWRITING AN EXISING FILE ABORTING!!")
+    #if os.path.isfile(target_path):
+    #    raise Exception("WARNING YOU ARE OVERWRITING AN EXISING FILE ABORTING!!")
 
-    with open(target_path, "ab") as nf:
+    with open(target_path, "wb") as nf:
             with open(source_path,'rb') as of:
                 shutil.copyfileobj(of, nf)
     return 1

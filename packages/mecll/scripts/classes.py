@@ -63,18 +63,32 @@ class single_session_analysis:
         df_new_data = pd.DataFrame.from_dict(new_data_dict,orient='columns')
         #print(df_new_data)
         df_cells = pd.read_csv(cell_df_path,index_col=0)
+        df_cells.set_index('cell_id')
+
+
+        #for each key in the data dictionary
         for k in data_dict.keys():
+            #if this key is not a column yet
             if k not in df_cells.columns:
-                df_cells[k] = None
+                df_cells[k] = None  #initialise this column
 
+
+            #for each cell in the new data
             for cell_ix,cell_id in enumerate(new_data_dict['cell_id']):
-                if cell_id not in df_cells['cell_id']:
-                    #print(1)
-                    d2 = dict([(k,self.info_dict[k]) if k in self.info_dict.keys() else (k,None) for k in df_cells.columns  ])
+                #if the cell_id is not in the dictionary
+                if cell_id not in list(df_cells['cell_id']):
+                    
+                    #create a dictionary with the results rom this analysis
+                    d2 = dict([(kcol,self.info_dict[kcol]) if kcol in self.info_dict.keys() else (kcol,None) for kcol in df_cells.columns  ])
                     d2['cell_id'] = cell_id; d2['cluster_id'] = cluster_ids[cell_ix]
-                    df_cells = df_cells.append(d2, ignore_index=True)
-
-                df_cells.loc[df_cells['cell_id']==cell_id,k] = data_dict[k][cell_ix]
+                    d2[k] = data_dict[k][cell_ix]
+                    #d2 = pd.DataFrame(d2)
+                    #and append it to the dataframe
+                    df_cells = df_cells.append(d2,ignore_index=True)
+                    df_cells.set_index('cell_id')
+                else:
+                    #otherwise add the information in the relevant place
+                    df_cells.loc[df_cells['cell_id']==cell_id,k] = data_dict[k][cell_ix]
 
         new_df_cells = df_cells
                 #df_cells.loc[df_cells]

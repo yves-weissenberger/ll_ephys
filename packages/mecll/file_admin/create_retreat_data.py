@@ -9,6 +9,31 @@ sys.path.append(package_dir)
 
 
 from load import load_data
+from process_data.proc_beh import get_in_task_pokes,build_poke_df
+
+
+
+def build_neuron_response_table(df,spkT,spkC,single_units):
+    """ Build a table of the responses of each neuron in a 
+        400ms symmetric window around the time of inpokes. 
+        Firing rate is in Hz
+    """
+    n_pokes = len(df)
+    n_units = len(single_units)
+    
+
+    response_table = np.zeros([n_pokes,n_units])
+    for unit_counter,unit_id in enumerate(single_units):
+        unit_spikes = spkT[spkC==unit_id]
+        for poke_ix,row in df.iterrows():
+            #print(row['time'].values)
+            response_table[poke_ix,unit_counter] = np.nansum(np.logical_and(unit_spikes>(row['time']-200),
+                                                                  unit_spikes<(row['time']+200))
+                                                                 )*10/4
+    return response_table
+            
+            
+
 
 if __name__=='__main__':
 
@@ -40,8 +65,8 @@ if __name__=='__main__':
 
         aligned_T = aligner.A_to_B(spkT)
         spks_unit_in_bounds = np.where(np.logical_not(np.isnan(aligned_T)))[0]
-        spkC_OF = spkC[spks_unit_in_bounds]
-        spkT_OF = aligned_T[spks_unit_in_bounds].astype('int')
+        spkC_OF = spkC[spks_unit_in_bounds].astype('uint16')
+        spkT_OF = aligned_T[spks_unit_in_bounds].astype('uint64')
         np.save(os.path.join(target_dir,'spkC_OF.npy'),spkC_OF)
         np.save(os.path.join(target_dir,'spkT_OF.npy'),spkT_OF)
         np.save(os.path.join(target_dir,'single_units.npy'),single_units)
@@ -54,8 +79,18 @@ if __name__=='__main__':
         spkT,spkC,single_units,events,lines,aligner = out
         aligned_T = aligner.A_to_B(spkT)
         spks_unit_in_bounds = np.where(np.logical_not(np.isnan(aligned_T)))[0]
-        spkC_task = spkC[spks_unit_in_bounds]
-        spkT_task = aligned_T[spks_unit_in_bounds].astype('int')
+        spkC_task = spkC[spks_unit_in_bounds].astype('uint16')
+        spkT_task = aligned_T[spks_unit_in_bounds].astype('uint64')
         np.save(os.path.join(target_dir,'spkC_task.npy'),spkC_task)
         np.save(os.path.join(target_dir,'spkT_task.npy'),spkT_task)
+
+
+
+        ##build and save table of poke data
+        df = build_poke_df(lines,events)
+        df.to_csv(os.path.join(target_dir,'task_event_table.csv'))
+        response_table = build_neuron_response_table(df,spkT_task,spkC_task,single_units)
+        np.save(os.path.join(target_dir,'neuron_response_table.npy'),response_table)
+
+
 

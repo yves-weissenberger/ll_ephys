@@ -36,18 +36,18 @@ if __name__=='__main__':
     all_sess = all_sessions()
     ctr = 0
     for session_id,subject,date,session_path in all_sess:
-        try:
-            #print(session)
-            out = all_sess.load_of_session(session_path)
-            spkT,spkC,single_units,events,lines,aligner = out
-            
-            spike_counts = get_total_spike_count(spkC,single_units)
-            spike_rates = get_firing_rates(spkT,spkC,single_units)
+        #try:
+        #print(session)
+        out = all_sess.load_of_session(session_path)
+        spkT,spkC,single_units,events,lines,aligner = out
+        
+        spike_counts = get_total_spike_count(spkC,single_units)
+        spike_rates = get_firing_rates(spkT,spkC,single_units)
 
 
-            sess = single_session_analysis(subject=subject,date=date,session_id=session_id)
-            sess.add_data({'firing_rates': spike_rates},single_units)
-            #sess.add_data({'num_spikes': spike_counts},single_units)
+        sess = single_session_analysis(subject=subject,date=date,session_id=session_id)
+        sess.add_data({'firing_rates': spike_rates},single_units)
+        #sess.add_data({'num_spikes': spike_counts},single_units)
 
             #data_dict = {'spike_count': spike_counts,
             #             'unit_id': single_units,
@@ -70,8 +70,8 @@ if __name__=='__main__':
             #print(single_sess.df)
 
 
-        except Exception as e:
-            print(e)
+        #except Exception as e:
+        #    print(e)
 
 
         if ctr>1:

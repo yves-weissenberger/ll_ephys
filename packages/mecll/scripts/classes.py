@@ -3,6 +3,7 @@ import os
 import sys
 import re
 import pandas as pd
+import pickle
 
 package_dir = os.path.split(os.path.split(os.path.abspath(__file__))[0])[0]
 sys.path.append(package_dir)
@@ -23,7 +24,7 @@ class single_session_analysis:
     """
     def __init__(self,subject,date,session_id):
 
-        self.result_store_directory = result_store_directory 
+        self.results_store_directory = result_store_directory 
         if not os.path.isdir(result_store_directory): os.mkdir(result_store_directory)
 
         #if type()
@@ -54,23 +55,54 @@ class single_session_analysis:
             
         return cell_ids
 
-    def add_data(self,data_dict,cluster_ids):
-        """ pass data to be added here in the form of a list of """
+    def add_data(self,data_dict,cluster_ids,save_format={},params=None):
+        """ pass data to be added here in the form of a list of 
+        
+        The basic idea with save list is that you can pass values of the dictionary
+        that you don't want to explicitly store in the dataframe to the add_data function 
+        in the save list. If they key is in this list, then a new folder will be created that
+        will contain the data.
+
+        Question: how do you pass the parameters of the analysis throuh?
+        
+        """
         
         new_data_dict  = {**data_dict, **self.info_dict}
         new_data_dict['cluster_id'] = cluster_ids
         new_data_dict['cell_id'] = self._get_cell_ids(new_data_dict)
-        df_new_data = pd.DataFrame.from_dict(new_data_dict,orient='columns')
-        #print(df_new_data)
+
         df_cells = pd.read_csv(cell_df_path,index_col=0)
         df_cells.set_index('cell_id')
 
 
         #for each key in the data dictionary
         for k in data_dict.keys():
+
+            if k in save_format.keys():
+                for cell_ix,(res,cell_id) in enumerate(zip(new_data_dict[k],new_data_dict['cell_id'])):
+                    if save_format[k]=='.npy':
+                        save_dir = k.replace('.','dot').replace(' ','_-_')
+                        save_dir_path = os.path.join(self.results_store_directory,save_dir)
+                        if not os.path.isdir(save_dir_path): os.mkdir(save_dir_path)
+                        save_path = os.path.join(save_dir_path,cell_id)
+                        np.save(save_path + '.npy',res)
+                    else:
+                        save_dir = k.replace('.','dot').replace(' ','_-_')
+                        save_dir_path = os.path.join(self.results_store_directory,save_dir)
+                        if not os.path.isdir(save_dir_path): os.mkdir(save_dir_path)
+                        save_path = os.path.join(save_dir_path,cell_id)
+                        with open(save_path,'w') as f:
+                            pickle.dump(res,f)
+
+
+                    data_dict[k][cell_ix] = save_path
+
+
+
+
             #if this key is not a column yet
-            if k not in df_cells.columns:
-                df_cells[k] = None  #initialise this column
+            if 'Analysis_'+k not in df_cells.columns:
+                df_cells['Analysis_'+k] = None  #initialise this column
 
 
             #for each cell in the new data
@@ -82,48 +114,20 @@ class single_session_analysis:
                     d2 = dict([(kcol,self.info_dict[kcol]) if kcol in self.info_dict.keys() else (kcol,None) for kcol in df_cells.columns  ])
                     d2['cell_id'] = cell_id; d2['cluster_id'] = cluster_ids[cell_ix]
                     d2[k] = data_dict[k][cell_ix]
-                    #d2 = pd.DataFrame(d2)
+                    d2['Analysis_'+k] = d2[k]
+                    del d2[k]
+
+
                     #and append it to the dataframe
                     df_cells = df_cells.append(d2,ignore_index=True)
                     df_cells.set_index('cell_id')
                 else:
                     #otherwise add the information in the relevant place
-                    df_cells.loc[df_cells['cell_id']==cell_id,k] = data_dict[k][cell_ix]
+                    #print(k,cell_ix,len(data_dict[k]),len(data_dict['cell_id']))
+                    #print(data_dict[k][cell_ix])
+                    df_cells.loc[df_cells['cell_id']==cell_id,'Analysis_'+k] = data_dict[k][cell_ix]
 
         new_df_cells = df_cells
-                #df_cells.loc[df_cells]
-        #df_cells.set_index('cell_id')
-        #df_new_data.set_index('cell_id')
-        #print(df_cells)
-        
-        
-        #cols_to_use = df_new_data.columns.difference(df_cells.columns)
-        #new_df_cells = pd.merge(df_new_data, df_cells, left_index=True, right_index=True, how='outer')
-        
-        
-        #new_df_cells = pd.concat([df_cells,df_new_data]).drop_duplicates(subset='cell_id',keep='last').reset_index(drop=True)
-
-        #new_df_cells = new_df_cells.groupby(['cell_id'],as_index=False).agg()#.agg(lambda x: ''.join(x.fillna(''))).reset_index(drop=True)
-        #new_df_cells = df_cells.join(df_new_data)
-
-
-        #df_cells.merge(df_new_data, 'outer', 'cell_id').groupby(lambda x: x.split('_')[0], axis=1).last()
-        #new_df_cells = df_cells
-
-
-        #print(cols_to_use)
-        
-        #new_df_cells = pd.concat([df_cells,df_new_data],how='outer',ignore_index=False)
-        #new_df_cells = pd.concat([df_cells,df_new_data],
-        #                        join="outer",
-        #                        ignore_index=False,
-        #                        keys=None,
-        #                        levels=None,
-        #                        names=None,
-        #                        verify_integrity=False,
-        #                        copy=True,)
-        #print(new_df_cells)
-        #new_df_cells = df_new_data.merge(df_cells, how='outer', on=['subject','date','cell_id']).drop_duplicates(keep='first')
 
         new_df_cells.to_csv(self.cell_df_path)
 
@@ -170,5 +174,6 @@ class all_sessions:
 
     def load_of_session(self,session_path):
         out = load_data(session_path,align_to='OF')
+        position = np.load(os.path.join(session_path,'OF_positions.npy'))
         #spkT,spkC,single_units,events,lines,aligner = out
-        return out
+        return out + [position]

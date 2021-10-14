@@ -83,5 +83,5 @@ def load_data(root_path,align_to='task',camera_frame_rate=30):
                             units_A=units_A,
                             units_B=1)
 
-    out = (spkT,spkC,single_units,events,lines,aligner)
+    out = [spkT,spkC,single_units,events,lines,aligner]
     return out

@@ -255,24 +255,24 @@ def process_grid_data(spatial_firing):
     grid_spacings = []
     field_sizes = []
     grid_scores = []
-    try:
-        for ctr, firing_rate_map in enumerate(spatial_firing):
-            rate_map_correlogram = get_rate_map_autocorrelogram(firing_rate_map)
-            rate_map_correlograms.append(np.copy(rate_map_correlogram))
-            field_properties = find_autocorrelogram_peaks(rate_map_correlogram)
-            if len(field_properties) > 7:
-                grid_spacing, field_size, grid_score = calculate_grid_metrics(rate_map_correlogram, field_properties)
-                grid_spacings.append(grid_spacing)
-                field_sizes.append(field_size)
-                grid_scores.append(grid_score)
-            else:
-                print('Not enough fields to calculate grid metrics.')
-                grid_spacings.append(np.nan)
-                field_sizes.append(np.nan)
-                grid_scores.append(np.nan)
-    except Exception as e:
-        print(e)
-        pass
+    #try:
+    for ctr, firing_rate_map in enumerate(spatial_firing):
+        rate_map_correlogram = get_rate_map_autocorrelogram(firing_rate_map)
+        rate_map_correlograms.append(np.copy(rate_map_correlogram))
+        field_properties = find_autocorrelogram_peaks(rate_map_correlogram)
+        if len(field_properties) > 7:
+            grid_spacing, field_size, grid_score = calculate_grid_metrics(rate_map_correlogram, field_properties)
+            grid_spacings.append(grid_spacing)
+            field_sizes.append(field_size)
+            grid_scores.append(grid_score)
+        else:
+            print('Not enough fields to calculate grid metrics.')
+            grid_spacings.append(np.nan)
+            field_sizes.append(np.nan)
+            grid_scores.append(np.nan)
+    #except Exception as e:
+    #    print(e)
+    #    pass
     res = {}
     res['rate_map_autocorrelogram'] = rate_map_correlograms
     res['grid_spacing'] = grid_spacings

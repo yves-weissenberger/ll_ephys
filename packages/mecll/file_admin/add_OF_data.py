@@ -53,11 +53,16 @@ if __name__ == '__main__':
             subject = get_session_subject(foldr)
             cam_sync_path,min_dt_sync = get_camera_sync_file(full_folder)
             pos_path = get_position_path(cam_sync_path)
-            copy_file_to(source_path=cam_sync_path,
-                         target_path=os.path.join(full_folder,of_cam_filename))
-        
-            copy_file_to(source_path=pos_path,
-                         target_path=os.path.join(full_folder,of_pos_filename))
+            try:
+                copy_file_to(source_path=cam_sync_path,
+                            target_path=os.path.join(full_folder,of_cam_filename))
+            except Exception as e: 
+                print(e)
+            try:
+                copy_file_to(source_path=pos_path,
+                            target_path=os.path.join(full_folder,of_pos_filename))
+            except Exception as e: 
+                print(e)
         else:
             print("Not processing {}".format(foldr))
 

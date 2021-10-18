@@ -129,6 +129,7 @@ class single_session_analysis:
 
         new_df_cells = df_cells
 
+        #print('\n')
         new_df_cells.to_csv(self.cell_df_path)
 
 

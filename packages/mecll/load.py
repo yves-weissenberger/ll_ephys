@@ -25,6 +25,11 @@ def find_task_file(root_path):
 def load_data(root_path,align_to='task',camera_frame_rate=30):
 
     """ 
+
+    This returns spike times in the reference frame of the recording 
+    NOT in the frame of any of the behaviour hardware.
+
+
     Arguments:
     =====================
 

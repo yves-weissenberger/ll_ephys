@@ -37,13 +37,23 @@ def build_neuron_response_table(df,spkT,spkC,single_units):
 
 if __name__=='__main__':
 
-    retreat_folders = ['/Users/yves/team_mouse Dropbox/MEC_data/spike_sorted/2021-08-06_39964_ks25',
+    retreat_folders = [#'/Users/yves/team_mouse Dropbox/MEC_data/spike_sorted/2021-08-06_39964_ks25',
+                       '/Users/yves/team_mouse Dropbox/MEC_data/spike_sorted/2021-08-12_39964_ks25',
 
-                       '/Users/yves/team_mouse Dropbox/MEC_data/spike_sorted/2021-07-31_39951_ks25'
+                       #'/Users/yves/team_mouse Dropbox/MEC_data/spike_sorted/2021-08-04_39951_ks25',
+                       #'/Users/yves/team_mouse Dropbox/MEC_data/spike_sorted/2021-07-31_39951_ks25',
+
+                       #'/Users/yves/team_mouse Dropbox/MEC_data/spike_sorted/2021-07-27_39965_ks25',
+                       #'/Users/yves/team_mouse Dropbox/MEC_data/spike_sorted/2021-07-28_39965_ks25',
+
+                       #'/Users/yves/team_mouse Dropbox/MEC_data/spike_sorted/2021-07-26_39955_ks25',
+                       ##'/Users/yves/team_mouse Dropbox/MEC_data/spike_sorted/2021-07-27_39955_ks25',
+
                         ]
     retreat_target_dir = '/Users/yves/Desktop/retreat_data_dir/data'
 
     for folder in retreat_folders:
+        print(folder)
         suffix = os.path.split(folder)[1]
         target_dir = os.path.join(retreat_target_dir,suffix)
         if not os.path.isdir(target_dir): os.mkdir(target_dir)

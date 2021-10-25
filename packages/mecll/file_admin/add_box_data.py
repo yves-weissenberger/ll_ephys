@@ -35,9 +35,11 @@ if __name__ == '__main__':
             beh_path, min_dt = get_behaviour_file(full_folder,subject_behaviour_folder)
             
             target_file_path = 'task_file_' + os.path.split(beh_path)[1]
-            copy_file_to(source_path=beh_path,
-                target_path=os.path.join(full_folder,target_file_path))
-
+            try:
+                copy_file_to(source_path=beh_path,
+                    target_path=os.path.join(full_folder,target_file_path))
+            except Exception as e:
+                print(e)
         else:
             print("Not processing {}".format(foldr))
 

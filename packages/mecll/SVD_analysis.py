@@ -16,13 +16,14 @@ def variance_explained_U(store_ref,store_cv,store_alt):
     
     #calculate explained variance explained by U
     ev_cv = np.sum(U.T.dot(store_cv)**2,axis=1)
-    norm_ev_cv = evals_cv/np.sum(ev_cv)
+    norm_ev_cv = ev_cv/np.sum(ev_cv)
 
     #calculate explained variance explained by U
     ev_alt = np.sum(U.T.dot(store_alt)**2,axis=1)
-    norm_ev_alt = evals_alt/np.sum(ev_alt)
+    norm_ev_alt = ev_alt/np.sum(ev_alt)
         
     return norm_ev_cv, norm_ev_alt
+
 
 
 def variance_explained_both(store_ref,store_cv,store_alt):
@@ -31,15 +32,14 @@ def variance_explained_both(store_ref,store_cv,store_alt):
 
     
     ev_cv = U.T.dot(store_cv).dot(V.T).diagonal()**2
-    norm_ev_cv /= np.sum(ev_cv)
+    norm_ev_cv = ev_cv/np.sum(ev_cv)
     
     
     ev_alt = U.T.dot(store_alt).dot(V.T).diagonal()**2
-    norm_ev_alt /= np.sum(ev_alt)
+    norm_ev_alt = ev_alt/np.sum(ev_alt)
 
     
     return norm_ev_cv, norm_ev_alt
-
 
 def variance_explained_V(store_ref,store_cv,store_alt):
     """ Not 100% sure about this one but think its
@@ -49,11 +49,11 @@ def variance_explained_V(store_ref,store_cv,store_alt):
     
     #calculate explained variance explained by U
     ev_cv = np.sum(np.dot(store_cv,V.T)**2,axis=1)
-    norm_ev_cv = evals_cv/np.sum(ev_cv)
+    norm_ev_cv = ev_cv/np.sum(ev_cv)
 
     #calculate explained variance explained by U
     ev_alt = np.sum(np.dot(store_alt,V.T)**2,axis=1)
-    norm_ev_alt = evals_alt/np.sum(ev_alt)
+    norm_ev_alt = ev_alt/np.sum(ev_alt)
         
     return norm_ev_cv, norm_ev_alt
 

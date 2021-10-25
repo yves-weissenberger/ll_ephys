@@ -71,7 +71,6 @@ def get_all_resps(aligner,poke_dict,single_units,spkT,spkC,window0=3000,window1=
                     
                     #this is a block of code to split the data in half, useful for looking at stability when you
                     #only have one task block
-                    
                     spike_locs = np.logical_and(spk_unit>(tpk-window0),spk_unit<(tpk+window1))
                     if get_time_mean:
                         nSpikes = len(np.where(spike_locs)[0])

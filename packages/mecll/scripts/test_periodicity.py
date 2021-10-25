@@ -8,7 +8,7 @@ import numba
 import numpy as np
 import pandas as pd
 import scipy.optimize as op
-
+import scipy.stats as stt
 package_dir = os.path.split(os.path.split(os.path.abspath(__file__))[0])[0]
 sys.path.append(package_dir)
 
@@ -151,6 +151,23 @@ def fit_sine_waves(resps_state_task1,resps_state_task2,NSHUFF=1000):
 
     return np.array(res_sets), np.array(ccs_sets), np.array(cc_shuff_sets)
     
+
+def get_pvals(ccs_sets,cc_shuff_sets):
+
+
+    pvals = [[],[]]
+    for cell_ix,cell in enumerate(ccs_sets):
+            #tmp = []
+        for task_nr in range(2):
+            p = stt.percentileofscore(cc_shuff_sets[cell_ix][task_nr],cell[task_nr])
+            pvals[task_nr].append(p)
+
+    #This is how it works out
+    #pvals_task1, pvals_task2
+    return pvals[0],pvals[1]
+           
+
+
 if __name__=='__main__':
 
     all_sess = all_sessions()
@@ -165,12 +182,12 @@ if __name__=='__main__':
               }
 
     for session_id,subject,date,session_path in all_sess:
+
         print(session_path)
         
         out = all_sess.load_task_session(session_path)
-        spkT,spkC,single_units,events,lines,aligner,position = out
+        spkT,spkC,single_units,events,lines,aligner = out
         df = build_poke_df(lines,events)
-
         poke_dict_t1, poke_dict_t2 = get_poke_dicts(df)
 
 
@@ -203,24 +220,26 @@ if __name__=='__main__':
 
         res_sets, ccs_sets, cc_shuff_sets = fit_sine_waves(resps_state_task1,resps_state_task2,NSHUFF=params['NSHUFF'])
 
-
-        #this needs changing currently in the 
+        pvals_task1, pvals_task2 = get_pvals(ccs_sets,cc_shuff_sets)
         print('\n')
         
 
 
+
+        #######################################################################################################
+        #######################################################################################################
         #include in results freq_task1, freq_task2, p_value_periodicity1, p_value_periodicity2
         param_string = "_used_params_" + repr(params)
-        sess.add_data({'freq_task1_'+param_string: XXXXX},single_units,
+        sess.add_data({'freq_task1_'+param_string: res_sets[:,0,0]},single_units,
                         save_format={'spatial_rate_maps'+param_string: '.npy'})
 
-        sess.add_data({'freq_task2_'+param_string: XXXXX},single_units,
+        sess.add_data({'freq_task2_'+param_string: res_sets[:,1,0]},single_units,
                         save_format={'spatial_rate_maps'+param_string: '.npy'})
 
-
-        sess.add_data({'p_value_freq_task1_'+param_string: XXXXX},single_units,
+        sess.add_data({'p_value_freq_task1_'+param_string: pvals_task1},single_units,
                         save_format={'spatial_rate_maps'+param_string: '.npy'})
 
-
-        sess.add_data({'p_value_freq_task2_'+param_string: XXXXX},single_units,
+        sess.add_data({'p_value_freq_task2_'+param_string: pvals_task2},single_units,
                         save_format={'spatial_rate_maps'+param_string: '.npy'})
+        #######################################################################################################
+        #######################################################################################################

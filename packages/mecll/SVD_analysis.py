@@ -26,17 +26,18 @@ def variance_explained_U(store_ref,store_cv,store_alt):
 
 
 
+
 def variance_explained_both(store_ref,store_cv,store_alt):
 
     U,S,V = np.linalg.svd(store_ref)
 
     
     ev_cv = U.T.dot(store_cv).dot(V.T).diagonal()**2
-    norm_ev_cv = ev_cv/np.sum(ev_cv)
+    norm_ev_cv = ev_cv/np.sum(S**2)
     
     
     ev_alt = U.T.dot(store_alt).dot(V.T).diagonal()**2
-    norm_ev_alt = ev_alt/np.sum(ev_alt)
+    norm_ev_alt = ev_alt/np.sum(S**2)
 
     
     return norm_ev_cv, norm_ev_alt

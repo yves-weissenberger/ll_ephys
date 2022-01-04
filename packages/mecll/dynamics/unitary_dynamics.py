@@ -41,11 +41,10 @@ def predict_all(params,x,dim,basis_tensor):
     k = 0
     skewM = jnp.einsum('i...,i...',params,basis_tensor)
     M = construct_M(skewM,dim)
-    #print(M.shape)
     for start_state in range(nT):
         for pred_state in range(start_state+1,nT-start_state):
             n_fwd = pred_state-start_state 
-            err += predict(M,x[start_state],x[pred_state],n_fwd,dim)
+            err += predict(M,x[start_state],x[pred_state],n_fwd,dim)*((1/n_fwd))
             k += 1
     mse = err/k
     #print(mse)

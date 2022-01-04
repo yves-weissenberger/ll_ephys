@@ -74,9 +74,9 @@ def plot_activity_on_graph(sequence,graph_type,order='poke',spks=None,node_size=
 
     else:
         nx.draw_circular(G,
-                         edge_color='.3',
-                         node_color=np.array(list(node_colors.values())),
-                         node_size=node_size,
+                        edge_color='.3',
+                        node_color=np.array(list(node_colors.values())),
+                        node_size=node_size,
                         connectionstyle="arc3,rad=-0.1",
                         width=2,
                         with_labels=False)

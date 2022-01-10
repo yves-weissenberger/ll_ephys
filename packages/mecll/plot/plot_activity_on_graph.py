@@ -37,15 +37,21 @@ def plot_activity_on_graph(sequence,graph_type,order='poke',spks=None,node_size=
 
     if len(spks)!='.3':
         cmap_ = 'RdBu_r'
-        if mx is None: mx = np.max(spks)
+        if mx is None: mx = np.nanmax(spks)
             
-        if mn is None: mn = 0
+        if mn is None: mn = np.min(0,np.nanmin(spks))
         cmap = matplotlib.cm.ScalarMappable(matplotlib.colors.Normalize(vmin=mn,vmax=mx,clip=True),cmap=cmap_)
 
         for i in range(9):
-            c = spks[i]
+            c_ = spks[i]
+            if ~np.isnan(c_):
+                c = cmap.to_rgba(c_)
+            else:
+                c = [.3,.3,.3]
+
             #pos = poke_pos
-            G.add_node(i,pos=poke_pos[i],color=cmap.to_rgba(c))
+
+            G.add_node(i,pos=poke_pos[i],color=c)
         
     seq_inv = [sequence.index(i) for i in range(9)]
     if order=='poke':

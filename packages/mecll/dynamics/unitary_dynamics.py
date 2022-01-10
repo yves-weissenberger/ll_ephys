@@ -4,6 +4,20 @@ from jax import grad, jit, vmap
 from jax import random
 
 
+def get_unique_transitions(seq0,seq1):
+
+    test_seq1 = []
+    for ix,i in enumerate(seq1):
+        #print(seq0[(np.where(seq0==i)[0]-1)%9],seq0[(np.where(seq0==i)[0])%9],seq1[(ix-1)%9],seq1[(ix)%9])
+        if seq0[(np.where(seq0==i)[0]-1)%9]!=seq1[(ix-1)%9]:
+            test_seq1.append(1)
+        else:
+            #print(seq1[ix])
+            test_seq1.append(0)
+
+    test_seq1 = np.array(test_seq1)
+    return test_seq1
+
 def predict(T,x,y,n,dim):
     transition_matrix = jnp.reshape(T,(dim,dim))
     return jnp.sum((jnp.dot(jnp.linalg.matrix_power(transition_matrix,n),x)-y)**2)

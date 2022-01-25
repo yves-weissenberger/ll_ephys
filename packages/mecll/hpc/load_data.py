@@ -1,25 +1,51 @@
-from dataclasses import dataclass
-import numpy as np
-
+# standard library
+from dataclasses import dataclass, field
 from typing import List, Tuple
 import re
+from datetime import datetime
+
+# other libraries
+import numpy as np
 
 
-@dataclass
-class session_data:
-    experiment_name = experiment_name
+@dataclass(frozen=True,order=True)
+class session_dataset:
+    """Stores all of the behavioural data from one session in one place
+    """
+    experiment_name: str
+    task_name: str
+    subejct_id: str
+    task_nr: field(str, repr=False)
+    graph: field(str,repr=False)
+    date: datetime.date
+    event_dict: field(dict, repr=False)
+    dat_dict: field(dict, repr=False)
+    events: field(np.ndarray, repr=False)
+    event_times = field(np.ndarray, repr=False)
 
 
-def load_behavioural_data(fpath: str):
+
+def load_behavioural_data(fpath: str) -> session_dataset:
 
 
-    lines = f.readlines()
+    lines = open(fpath,'r').readlines()
     out = get_metadata(lines)
 
     experiment_name, task_name, subject_id, task_nr, graph,lineloop,date,test,summary_dict = out
-    dat_dict,events,event_times,nRews,event_dict = mpk.load.parse_data(lines,experiment_name)
-    date = (np.datetime64(date.replace(' ','T').replace('/','-'))).astype('object')
-    return 
+    dat_dict,events,event_times,nRews,event_dict = parse_data(lines,experiment_name)
+    date = datetime.strptime(date.replace(' ','T').replace('/','-'))
+
+    dset = session_dataset(experiment_name,
+                           task_name,
+                           subject_id,
+                           task_nr,
+                           graph,
+                           date,
+                           event_dict,
+                           dat_dict,
+                           events,
+                           event_times)
+    return dset
 
 
 
@@ -51,11 +77,19 @@ def get_metadata(lines: List[str]) -> str:
         if re.findall('V -1 *',l):
             summary_lines.append(l)
 
-    #summary_dict = _get_summary_dict(summary_lines)
+    summary_dict = _get_summary_dict(summary_lines)
     return experiment_name, task_name, subject_id, task_nr, graph, lineloop, date, test, summary_dict
 
 
-def _get_summary_dict(summary):
+def _get_summary_dict(summary: List[str]) -> dict:
+    """Get summary of performance in the session
+
+    Args:
+        summary (List[str]): [description]
+
+    Returns:
+        dict: [description]
+    """
     summary_dict = {}
     for i in summary:
         try:

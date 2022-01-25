@@ -8,24 +8,10 @@ from datetime import datetime
 import numpy as np
 
 
-@dataclass(frozen=True,order=True)
-class session_dataset:
-    """Stores all of the behavioural data from one session in one place
-    """
-    experiment_name: str
-    task_name: str
-    subejct_id: str
-    task_nr: field(str, repr=False)
-    graph: field(str,repr=False)
-    date: datetime.date
-    event_dict: field(dict, repr=False)
-    dat_dict: field(dict, repr=False)
-    events: field(np.ndarray, repr=False)
-    event_times = field(np.ndarray, repr=False)
 
 
 
-def load_behavioural_data(fpath: str) -> session_dataset:
+def load_behavioural_data(fpath: str) -> session_behaviour_dataset:
 
 
     lines = open(fpath,'r').readlines()
@@ -33,18 +19,18 @@ def load_behavioural_data(fpath: str) -> session_dataset:
 
     experiment_name, task_name, subject_id, task_nr, graph,lineloop,date,test,summary_dict = out
     dat_dict,events,event_times,nRews,event_dict = parse_data(lines,experiment_name)
-    date = datetime.strptime(date.replace(' ','T').replace('/','-'))
+    date = datetime.fromisoformat(date.replace(' ','T').replace('/','-'))
 
-    dset = session_dataset(experiment_name,
-                           task_name,
-                           subject_id,
-                           task_nr,
-                           graph,
-                           date,
-                           event_dict,
-                           dat_dict,
-                           events,
-                           event_times)
+    dset = session_behaviour_dataset(experiment_name,
+                                    task_name,
+                                    subject_id,
+                                    task_nr,
+                                    graph,
+                                    date,
+                                    event_dict,
+                                    dat_dict,
+                                    events,
+                                    event_times)
     return dset
 
 

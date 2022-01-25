@@ -1,13 +1,20 @@
 # standard library
+from dataclasses import dataclass
 import os
 import re
 from typing import List, Tuple
+
+
+# related modules
+from .datasets import session_ephys_dataset
 
 # External libraries
 import numpy as np
 import pandas as pd
 
-def load_ephys_data(root: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray,float]:
+
+
+def load_ephys_data(root: str) -> session_ephys_dataset:
     """Load ephys data given root directory containing only 1 set of ephys files
 
     Args:
@@ -18,7 +25,9 @@ def load_ephys_data(root: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.n
     """
     paths = find_paths_ephys(root)
     spkT_u, spkC, rsync_times_spk, clust_qual,start = load_ephys_paths(paths)
-    return spkT_u, spkC, rsync_times_spk, clust_qual, start
+
+    dset = session_ephys_dataset(spkT_u, spkC, rsync_times_spk, clust_qual, start)
+    return dset
 
 def find_paths_ephys(ROOT: str) -> List[str]:
     """Given root folder containing all relevant spike files,

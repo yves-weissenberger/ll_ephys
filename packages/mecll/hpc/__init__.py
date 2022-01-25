@@ -1,2 +1,2 @@
-from .load_data import parse_data
-from .load_ephys import    load_ephys_data
+from .load_behaviour_data import load_behavioural_data
+from .load_ephys_data import    load_ephys_data

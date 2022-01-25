@@ -3,8 +3,9 @@ import os
 import re
 from typing import List, Tuple
 
-# numpy 
+# External libraries
 import numpy as np
+import pandas as pd
 
 def load_ephys_data(root: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray,float]:
     """Load ephys data given root directory containing only 1 set of ephys files
@@ -13,7 +14,7 @@ def load_ephys_data(root: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.n
         ROOT (str): root
 
     Returns:
-        Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray,float]: [spike times etc]
+        Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray,float]: [spkT_u, spkC, rsync_times_spk, clust_qual, start]
     """
     paths = find_paths_ephys(root)
     spkT_u, spkC, rsync_times_spk, clust_qual,start = load_ephys_paths(paths)

@@ -1,7 +1,77 @@
+from dataclasses import dataclass
 import numpy as np
 
 from typing import List, Tuple
 import re
+
+
+@dataclass
+class session_data:
+    experiment_name = experiment_name
+
+
+def load_behavioural_data(fpath: str):
+
+
+    lines = f.readlines()
+    out = get_metadata(lines)
+
+    experiment_name, task_name, subject_id, task_nr, graph,lineloop,date,test,summary_dict = out
+    dat_dict,events,event_times,nRews,event_dict = mpk.load.parse_data(lines,experiment_name)
+    date = (np.datetime64(date.replace(' ','T').replace('/','-'))).astype('object')
+    return 
+
+
+
+def get_metadata(lines: List[str]) -> str:
+    """ Get metadata from the beginning of the file """
+    
+    summary_lines = []
+    experiment_name = task_name = subject_id = task_nr = graph = lineloop = date = test = None
+    for l in lines:
+        if re.findall('I Experiment name  : (.*?)\n',l): experiment_name = re.findall('I Experiment name  : (.*?)\n',l)[0]
+        
+        if re.findall('Task name : (.*?)\n',l): task_name = re.findall('Task name : (.*?)\n',l)[0]
+        
+        if re.findall('Subject ID : (.*?)\n',l): subject_id = eval(re.findall('Subject ID : (.*?)\n',l)[0])
+            
+        if re.findall('Start date : (.*?)\n',l): date = re.findall('Start date : (.*?)\n',l)[0]
+        
+        #################################################################################
+        #### Specific to this task
+        #################################################################################
+
+        if re.findall('V.*? task_nr (.*?)\n',l): task_nr = re.findall('V.*? task_nr (.*?)\n',l)[0]
+            
+        if re.findall('P.*? (G[0-9]_[0-9])\n',l): graph = re.findall('P.*? (G[0-9]_[0-9])\n',l)[0]
+
+        if re.findall('P .* (LOOP|LINE|loop|line)\n',l): lineloop = re.findall('P .* (LOOP|LINE|loop|line)\n',l)[0].lower()
+        if re.findall('TEST ([A-z]*)\\n',l): test = eval(re.findall('TEST ([A-z]*)\\n',l)[0])
+
+        if re.findall('V -1 *',l):
+            summary_lines.append(l)
+
+    #summary_dict = _get_summary_dict(summary_lines)
+    return experiment_name, task_name, subject_id, task_nr, graph, lineloop, date, test, summary_dict
+
+
+def _get_summary_dict(summary):
+    summary_dict = {}
+    for i in summary:
+        try:
+
+            k =re.findall('-1 (.*?) ',i)[0]
+            if '\n' in i:
+                summary_dict[k] = eval(re.findall('-1 .*? (.*?)\n',i)[0]) if (k!='subject_id' and k!='graph_type') else re.findall('-1 .*? (.*?)\n',i)[0]
+            else:
+                summary_dict[k] = eval(re.findall('-1 .*? (.*$)',i)[0]) if (k!='subject_id' and k!='graph_type') else re.findall('-1 .*? (.*$)',i)[0]
+        except Exception as e:
+            print('exception in _get_summary_dict')
+            print(e)
+            print(i)
+    return summary_dict
+
+
 
 def _parse_dat(text: str):
     """ function that takes data in and returns meaningful stuff """

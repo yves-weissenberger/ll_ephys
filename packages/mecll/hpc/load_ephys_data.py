@@ -24,6 +24,7 @@ def load_ephys_data(root: str) -> session_ephys_dataset:
         Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray,float]: [spkT_u, spkC, rsync_times_spk, clust_qual, start]
     """
     paths = find_paths_ephys(root)
+    #date = datetime.fromisoformat(date.replace(' ','T').replace('/','-'))
     spkT_u, spkC, rsync_times_spk, clust_qual,start = load_ephys_paths(paths)
 
     dset = session_ephys_dataset(spkT_u, spkC, rsync_times_spk, clust_qual, start)

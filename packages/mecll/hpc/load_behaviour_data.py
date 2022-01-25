@@ -4,6 +4,9 @@ from typing import List, Tuple
 import re
 from datetime import datetime
 
+#local modules
+from .datasets import session_behaviour_dataset
+
 # other libraries
 import numpy as np
 

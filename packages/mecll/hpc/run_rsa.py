@@ -3,11 +3,13 @@ from typing import List
 
 def get_spatial_distance_matrix(poke_pos: List[List[int, int]], seq: List[int]) -> np.ndarray:
 
+    pp = [pos for i,pos in enumerate(poke_pos) if i in seq]
+
     return None
     
     
 def remove_diagonal(A: np.ndarray) -> np.ndarray:
-
+    """ Useful for when dealing with correlation or other distance matrices """
     removed = A[~np.eye(A.shape[0], dtype=bool)].reshape(A.shape[0], int(A.shape[0])-1, -1)
     return np.squeeze(removed)
 

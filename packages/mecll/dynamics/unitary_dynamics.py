@@ -88,3 +88,39 @@ def grad_wrapper(params,x,dim,basis_tensor):
     grad = np.array(grad)
     #print(grad)
     return grad
+
+
+##############
+
+
+def evaluate_cc(activity: np.ndarray,pred: np.ndarray):
+    """ Correlation coefficient between actual and predicted activity, looping over neurons"""
+    n_neurons = activity.shape[1]
+    true_cc = []
+
+    for i in range(n_neurons):
+        if (activity[:,i][1:].shape!=pred[:,i][:-1].shape):
+            print(activity[:,i][1:].shape,pred[:,i][:-1].shape,i)
+        true_cc.append(np.corrcoef(activity[:,i][1:],pred[:,i][:-1])[0,1])
+
+    return true_cc, np.nanmean(true_cc)
+
+def zscore_population_activity(dat: np.ndarray) -> np.ndarray:
+    "This zscores the activity of each cell. Hence each row is activity in one state, each column is a neuron"
+    out = (dat - np.mean(dat,axis=0))/np.std(dat,axis=0)
+    out = out[:,~np.isnan(np.sum(out,axis=0))]
+    return out
+
+def fit_dynamics_model(pca_dim: int, pca_activity1: np.ndarray):
+    basis_tensor_inf = get_basis_tensor(pca_dim)
+    n_params = int(pca_dim*(pca_dim-1)/2)
+    params = np.random.normal(size=(n_params))# + np.eye(dim)
+    res = op.minimize(predict_all,
+                   params,
+                   (pca_activity1,pca_dim,basis_tensor_inf),
+                   jac=grad_wrapper,
+                   method='BFGS'
+                   )
+    return res
+
+#def predict_neural_activity_from

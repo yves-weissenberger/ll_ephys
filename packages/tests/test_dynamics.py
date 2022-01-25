@@ -47,9 +47,3 @@ class TestModule(unittest.TestCase):
         O  = dynamics.construct_M(S,n)
         self.assertTrue(np.allclose(O@O.T,np.eye(n)))
 
-    
-    def test_gradient(self):
-
-        n = 3
-        params = get_params(n)
-        pass

@@ -7,7 +7,7 @@ import pandas as pd
 
 
 
-def get_n_samples_first_half(session_data_path,divisor=384*2):
+def get_n_samples_first_half(session_data_path:str ,divisor: int =384*2):
     """ Divisor is 384 channels * 2bits per int16"""
     pth = os.path.join(session_data_path,[i for i in os.listdir(session_data_path) if 'stitch_info' in i][0])
     with open(pth,'r') as f:
@@ -16,7 +16,7 @@ def get_n_samples_first_half(session_data_path,divisor=384*2):
     return int(size1/divisor)
 
 
-def find_task_file(root_path):
+def find_task_file(root_path: str) -> str:
     for f in os.listdir(root_path):
         if 'task_file_' in f:
             return f
@@ -93,6 +93,13 @@ def load_data(root_path,align_to='task',camera_frame_rate=30):
     return out
 
 
+
+
+
+
+
+
+#__________________________________________________________________________________________________
 # Class for converting timestamps between recording systems using sync pulses with 
 # random inter-pulse intervals. 
 # https://pycontrol.readthedocs.io/en/latest/user-guide/synchronisation

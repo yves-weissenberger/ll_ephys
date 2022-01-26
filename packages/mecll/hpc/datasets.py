@@ -1,3 +1,4 @@
+from typing import List
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -23,14 +24,17 @@ class session_behaviour_dataset:
     """
     experiment_name: str
     task_name: str
-    subejct_id: str
+    subject_id: str
+    line_loop: str
     task_nr: str =  field(repr=False)
     graph: str = field(repr=False)
     date: datetime
     event_dict: dict =  field(repr=False)
+    summary_dict: dict =  field(repr=False)
     dat_dict: dict = field(repr=False)
     events: np.ndarray =  field(repr=False)
     event_times: np.ndarray = field(repr=False)
+    task_times: List[List[int]] = field(repr=False)
 
 
 @dataclass(frozen=True)

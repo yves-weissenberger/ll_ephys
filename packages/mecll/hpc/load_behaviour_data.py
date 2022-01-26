@@ -23,19 +23,57 @@ def load_behavioural_data(fpath: str) -> session_behaviour_dataset:
     experiment_name, task_name, subject_id, task_nr, graph,lineloop,date,test,summary_dict = out
     dat_dict,events,event_times,nRews,event_dict = parse_data(lines,experiment_name)
     date = datetime.fromisoformat(date.replace(' ','T').replace('/','-'))
+    task_times = get_task_ranges(lines,event_times[-1])
 
-    dset = session_behaviour_dataset(experiment_name,
-                                    task_name,
-                                    subject_id,
-                                    task_nr,
-                                    graph,
-                                    date,
-                                    event_dict,
-                                    dat_dict,
-                                    events,
-                                    event_times)
+    dset = session_behaviour_dataset(experiment_name=experiment_name,
+                                    task_name=task_name,
+                                    subject_id=subject_id,
+                                    task_nr=task_nr,
+                                    line_loop=lineloop,
+                                    graph=graph,
+                                    date=date,
+                                    event_dict=event_dict,
+                                    summary_dict=summary_dict,
+                                    dat_dict=dat_dict,
+                                    events=events,
+                                    event_times=event_times,
+                                    task_times=task_times)
     return dset
 
+def get_task_ranges(lines: List[str],session_end_time: int):
+    """ Return task ranges in ms in the reference frame of 
+        the behaviour system
+    """
+
+    task_switches = [re.findall(' ([0-9]*)', i)[0] for i in lines if 'change_task' in i and i.startswith('V')]
+    task_boundU = [1+int(re.findall(' ([0-9]*) ',lines[ix+1])[0]) for ix,l_ in enumerate(lines) if "OLD" in l_] + [1000*session_end_time]
+    task_boundL = [0] + [int(re.findall(' ([0-9]*) ',lines[ix+1])[0]) for ix,l_ in enumerate(lines) if "NEW" in l_]
+    # this detects when it changes from an old task
+    task_order = [int(re.findall('([0-9])\n',lines[ix+3])[0]) for ix,l_ in enumerate(lines) if "OLD" in l_]
+
+    # this is a hack to get the first task as task_order reports
+    # only what new task
+    if task_order[0]==2:
+        task_order = [1] + task_order
+    elif task_order[1]==2:
+        task_order = [2] + task_order
+
+
+    cTask = task_order[0]
+    task1_times = []
+    task2_times = []
+
+    #print(task_boundL,task_boundU)
+    for tl_,tu_ in zip(task_boundL,task_boundU):
+
+        if cTask==1:
+            task1_times.append([tl_,tu_])
+        elif cTask==2:
+            task2_times.append([tl_,tu_])
+        if cTask==1: cTask=2
+        elif cTask==2: cTask=1
+    task_times = [task1_times,task2_times]
+    return task_times
 
 
 def get_metadata(lines: List[str]) -> str:

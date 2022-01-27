@@ -5,7 +5,7 @@ from ..rsync import *
 import numpy as np
 
 
-def get_in_range(task_time_ranges: List[List[int]],t: Union[float,int]) -> bool:
+def check_in_range(task_time_ranges: List[List[int]],t: Union[float,int]) -> bool:
     """Find out if one of the times is in the range of a given task
 
     Args:
@@ -23,6 +23,27 @@ def get_in_range(task_time_ranges: List[List[int]],t: Union[float,int]) -> bool:
 
     return in_range
 
+
+def get_transitions_count_dict(ddp: dict, task_times: List[List[int]], task_nr: int = 0) -> dict:
+    
+    transitions = [{},{}]
+    for i in ddp:
+        
+        t_ = i[2] * 1000
+        if check_in_range(task_times[task_nr],t_):
+            tmp = (i[0],i[1])
+            if tmp in transitions[0].keys():
+                transitions[0][tmp] += 1
+            else:
+                transitions[0][tmp] = 1
+        else:
+            tmp = (i[0],i[1])
+            if tmp in transitions[1].keys():
+                transitions[1][tmp] += 1
+            else:
+                transitions[1][tmp] = 1
+
+    return transitions
 
 
 def get_seq_from_transitions(transitions_port: dict) -> List:
@@ -44,7 +65,8 @@ def get_seq_from_transitions(transitions_port: dict) -> List:
     transition_counts = list(transitions_port.values())
     diff = max(transition_counts) - min(transition_counts)
     if diff>8:
-        raise Exception('Transitions are not clean')
+        #raise Exception('Transitions are not clean')
+        print("WARNING THERE MAY BE FAULTY TRANSITIONS IN HERE, CHECK THE TRANSITIONS DICT")
 
     keys = list(transitions_port.keys())
     seq = [keys[0][0],keys[0][1]]

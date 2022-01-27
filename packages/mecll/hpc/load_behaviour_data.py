@@ -4,6 +4,8 @@ from typing import List, Tuple
 import re
 from datetime import datetime
 
+from matplotlib.pyplot import get
+
 #local modules
 from .datasets import session_behaviour_dataset
 
@@ -25,6 +27,8 @@ def load_behavioural_data(fpath: str) -> session_behaviour_dataset:
     date = datetime.fromisoformat(date.replace(' ','T').replace('/','-'))
     task_times = get_task_ranges(lines,event_times[-1])
 
+    rsync_times = get_rsync_times_behaviour(lines)
+
     dset = session_behaviour_dataset(experiment_name=experiment_name,
                                     task_name=task_name,
                                     subject_id=subject_id,
@@ -39,6 +43,13 @@ def load_behavioural_data(fpath: str) -> session_behaviour_dataset:
                                     event_times=event_times,
                                     task_times=task_times)
     return dset
+
+
+def get_rsync_times_behaviour(lines: List[str]) -> np.ndarray:
+
+    rsync_times_pyc = np.array([int(re.findall(' ([0-9]*) ' ,i)[0]) for i in lines if '32\n' in i[-4:]])*30
+
+    return rsync_times_pyc
 
 def get_task_ranges(lines: List[str],session_end_time: int):
     """ Return task ranges in ms in the reference frame of 

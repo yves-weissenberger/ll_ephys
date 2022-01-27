@@ -27,7 +27,7 @@ def load_ephys_data(root: str) -> session_ephys_dataset:
     #date = datetime.fromisoformat(date.replace(' ','T').replace('/','-'))
     spkT_u, spkC, rsync_times_spk, clust_qual,start = load_ephys_paths(paths)
 
-    dset = session_ephys_dataset(spkT_u, spkC, rsync_times_spk, clust_qual, start)
+    dset = session_ephys_dataset(spkT_u, spkC, clust_qual, start, rsync_times_spk)
     return dset
 
 def find_paths_ephys(ROOT: str) -> List[str]:

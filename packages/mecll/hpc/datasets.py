@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -11,9 +11,9 @@ import numpy as np
 class session_ephys_dataset:
     unaligned_spike_times: np.ndarray
     spike_clusters: np.ndarray
-    rsync_times_spike: np.ndarray
     cluster_quality: np.ndarray
     offset: int = field(default=0)
+    rsync_times_spike: Optional[np.ndarray] = field(default=None)
 
 
 
@@ -35,6 +35,7 @@ class session_behaviour_dataset:
     events: np.ndarray =  field(repr=False)
     event_times: np.ndarray = field(repr=False)
     task_times: List[List[int]] = field(repr=False)
+    rsync_times_behaviour: Optional[np.ndarray] = field(default=None)
 
 
 @dataclass(frozen=True)

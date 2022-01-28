@@ -41,7 +41,8 @@ def load_behavioural_data(fpath: str) -> session_behaviour_dataset:
                                     dat_dict=dat_dict,
                                     events=events,
                                     event_times=event_times,
-                                    task_times=task_times)
+                                    task_times=task_times,
+                                    rsync_times_behaviour= rsync_times)
     return dset
 
 

@@ -5,7 +5,7 @@ from typing import List, Optional
 import numpy as np
 from scipy.spatial import distance_matrix
 
-def get_spatial_distance_matrix(poke_pos: List[List[int, int]], seq: List[int], p: Optional[int]=1) -> np.ndarray:
+def get_spatial_distance_matrix(poke_pos: List[List[int]], seq: List[int], p: int =1) -> np.ndarray:
     """Get physical distance matrix
 
     Args:
@@ -18,7 +18,7 @@ def get_spatial_distance_matrix(poke_pos: List[List[int, int]], seq: List[int], 
     """
     pp = [pos for i,pos in enumerate(poke_pos) if i in seq]
 
-    return distance_matrix(pp,p=p)
+    return distance_matrix(pp,pp,p=p)
 
 
 def line_distance_matrix(seq: List[int],p=1) -> np.ndarray:
@@ -33,13 +33,14 @@ def line_distance_matrix(seq: List[int],p=1) -> np.ndarray:
         np.ndarray: The task distance matrix
     """
     seq = list(seq)
+    sorted_seq  = sorted(seq)
     n = len(seq)
     d = np.zeros([n,n])
-    for i in range(n):
-        for j in range(n):
+    for iix,i in enumerate(sorted_seq):
+        for jix,j in enumerate(sorted_seq):
             ind1 = seq.index(i)
             ind2 = seq.index(j)
-            d[i,j] = abs(ind1-ind2)**p
+            d[iix,jix] = abs(ind1-ind2)**p
     return d
 
 

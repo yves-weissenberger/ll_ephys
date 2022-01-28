@@ -1,9 +1,6 @@
-import numpy as np
-
-import os
-import sys
-import numpy as np
 import re
+
+import numpy as np
 
 def get_binned_spikes(spks,bin_size=10):
     """ Takes in spike times of units and returns binned spike

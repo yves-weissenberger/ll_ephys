@@ -1,4 +1,3 @@
-import sys
 import os
 import re
 
@@ -19,13 +18,13 @@ def has_spike_data(folder_path):
 
     return files_in_folder(required_files,folder_path)
 
-def has_of_data(folder_path):
+def has_of_data(folder_path: str):
     
     conditions = (file_specs_in_folder(['OF_camera_timestamps.csv','OF_positions.npy'],folder_path) + 
                   files_in_folder(['timestamps_OF.npy'],folder_path) )
     return conditions
 
-def has_task_data(folder_path):
+def has_task_data(folder_path: str):
 
 
     conditions = (file_specs_in_folder(['^(?!.*stitch_info).*\.txt.*$'],folder_path) + 

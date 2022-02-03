@@ -2,7 +2,7 @@
 import numpy as np
 import unittest
 #from scipy.optimize import approx_fprime
-f#rom scipy.special import factorial
+#from scipy.special import factorial
 
 class TestModule(unittest.TestCase):
 

@@ -3,6 +3,7 @@ from . import dynamics
 from . import rsync
 from . import file_admin
 from . import hpc
+from . import rotate_across_tasks
 #from . import proc_beh
 from . import GLM
 from .analyses import test_periodicity
@@ -13,3 +14,4 @@ from .SVD_analysis import variance_explained_U,variance_explained_V,variance_exp
 from . import open_field_analysis
 from .process_data import proc_beh, proc_neural
 from .constants import *
+

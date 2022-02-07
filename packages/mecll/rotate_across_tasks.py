@@ -47,13 +47,13 @@ def nan_corrcoef(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     Returns:
         np.ndarray: [description]
     """
-    cc = np.ma.corrcoef(np.ma.masked_where(np.isnan(x),x),
-                np.ma.masked_where(np.isnan(y),y)
-               )
+    cc = np.ma.corrcoef(np.ma.masked_where(np.isnan(x), x),
+                        np.ma.masked_where(np.isnan(y), y) )
     return cc.data
 
-
-def get_rotation_correlations(task1: np.ndarray, task2_ref: np.ndarray) -> np.ndarray:
+def get_rotation_correlations(task1: np.ndarray, 
+                              task2_ref: np.ndarray, 
+                              by_neuron: bool=True) -> np.ndarray:
 
     """Get maximal correlation rotating acros the two lines while moving around
        in one direction.
@@ -61,7 +61,7 @@ def get_rotation_correlations(task1: np.ndarray, task2_ref: np.ndarray) -> np.nd
     Args:
         task1 (np.ndarray): neural activity in task1, from one direction
         task2 (np.ndarray): neural activity in task 2, from one direction, this array will be rotated
-        graph_type (str): line | loop
+        graph_type (str):   line | loop
 
     Returns:
         np.ndarray: Correlations at each rotation and with each possible flip
@@ -74,13 +74,23 @@ def get_rotation_correlations(task1: np.ndarray, task2_ref: np.ndarray) -> np.nd
     task2_ref = np.ma.masked_invalid(task2_ref)
     
     for roll_amount in range(9):
-
+        # stores correlation coefficients averaged over neurons
+        # for one roll of the dice
+        roll_cc_store = []
         for flip in [True,False]:
             task2 = task2_ref.copy()
 
             task2 = np.roll(task2,roll_amount,axis=1)
             if flip: task2 = np.flipud(task2)
-            cc_i = nan_corrcoef(task1.flatten(),task2.flatten())
-            ccs.append(cc_i)
+            
+            single_neuron_corr = []
+            if by_neuron:
+                for n_task1, n_task2 in zip(task1,task2):
+                    single_neuron_corr.append(nan_corrcoef(n_task1,n_task2)[0,1])
+                    cc_i = np.mean(single_neuron_corr)
+            else:
+                cc_i = nan_corrcoef(task1.flatten(),task2.flatten())[0,1]
+            roll_cc_store.append(cc_i)
+        ccs.append(roll_cc_store)
     
-    return np.array(ccs)
+    return ccs

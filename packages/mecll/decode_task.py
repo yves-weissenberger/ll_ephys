@@ -10,10 +10,8 @@ from .load import load_data
 def get_valid_pokes_index_by_direction(frm_task: np.ndarray
                                        ) -> Tuple[np.ndarray,np.ndarray]:
 
-    #
     task_dir1 = np.where(np.logical_not(np.isnan(np.sum(frm_task,axis=0)[:,0])))[0]
     task_dir2 = np.where(np.logical_not(np.isnan(np.sum(frm_task,axis=0)[:,1])))[0]
-
     
     return task_dir1, task_dir2
 
@@ -92,6 +90,8 @@ def fit_svm_classify_task(X_train: np.ndarray, y_train: np.ndarray,
     return np.mean(svm.predict(X_test.T)==y_test)
 
 
+
+# This is implemented mainly as
 def main(firing_rate_maps: np.ndarray,suppress_warnings: bool=True) -> List[float]:
 
     # can stuggle with division by 0 errors

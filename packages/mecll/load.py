@@ -1,9 +1,8 @@
 import os
 import re
-import sys
 import numpy as np
 import pandas as pd
-from .rsync import *
+from rsync import *
 
 
 
@@ -24,8 +23,7 @@ def find_task_file(root_path: str) -> str:
 
 def load_data(root_path,align_to='task',camera_frame_rate=30):
 
-    """ 
-
+    """
     This returns spike times in the reference frame of the recording 
     NOT in the frame of any of the behaviour hardware.
 

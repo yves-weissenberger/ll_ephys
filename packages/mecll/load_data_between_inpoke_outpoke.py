@@ -1,12 +1,48 @@
 from typing import Tuple, Any
 import re
+from dataclasses import dataclass
+
 
 import numpy as np
 import pandas as pd
 
+from .process_data.proc_beh import build_poke_df
+from .process_data.proc_neural import get_mean_resps
+from .load import load_data
+
+@dataclass
+class session_data:
+    task_1_resps: None
+    task_2_resps: None
+    task_1_resps_by_direction: None
+    task_2_resps_by_direction: None
+    session_dataframe: None
+
+def load_inpoke_filtered_data(root_path: str) -> Tuple[np.ndarray, np.ndarray]:
+    out = load_data(root_path,align_to='task')
+    spkT,spkC,single_units,events,lines,aligner = out
+    # spkT_aligned = aligner.A_to_B(spkT)
+    #valid_spikes = np.where(~np.isnan(spkT))[0]
+    # spkC_task = spkC[valid_spikes]
+    # spkT_task = spkT[valid_spikes]
+
+    df = build_poke_df(lines,events)
+    poke_dict_t1, poke_dict_t2 = build_poke_dict_with_inpokes_and_outpokes(df)
+    all_resps_task1_single_trials,_ = get_all_resps_inpokes_and_outpokes(aligner, poke_dict_t1,
+                                                   single_units, spkT,
+                                                   spkC)
+
+    all_resps_task2_single_trials,_ = get_all_resps_inpokes_and_outpokes(aligner, poke_dict_t2,
+                                                   single_units, spkT,
+                                                   spkC)
+
+    mean_resps_task1,_ = get_mean_resps(all_resps_task1_single_trials)
+    mean_resps_task2,_ = get_mean_resps(all_resps_task2_single_trials)
+
+    return mean_resps_task1, mean_resps_task2
 
 
-def build_poke_dict_with_inpokes_and_outpokes(df: pd.DataFrame) :
+def build_poke_dict_with_inpokes_and_outpokes(df: pd.DataFrame) -> Tuple[dict, dict]:
     
     poke_dict_t1 ={}
     poke_dict_t2 = {}

@@ -5,7 +5,8 @@ from sklearn.model_selection import LeavePOut
 from sklearn.svm import SVC
 
 
-def get_svm_fit_within_task(frm_task: np.ndarray, valid_ix: List[int], leave_out: int=1,permutation: bool=False) -> List[float]:
+def get_svm_fit_within_task(frm_task: np.ndarray, valid_ix: List[int],
+                            leave_out: int=1,permutation: bool=False) -> List[float]:
     """Fit a support vector machine that tries to distinguish which direction a subject is
     moving around 
 

@@ -11,23 +11,22 @@ def load_data(selected_session: int,by_dir: bool=False) -> Tuple[np.ndarray,
                                                                 np.ndarray,
                                                                 str,
                                                                 str]:
-        
-    
     
     """ Function to load data structured according to the format
         that the data were delivered to the retreat for
     """
+    
     all_data_dir = '/Users/yves/Desktop/retreat_data_dir/data/'
     all_data_folders = sorted([i for i in os.listdir(all_data_dir) if 'ks25' in i])
     root_dir = os.path.join(all_data_dir,all_data_folders[selected_session])
     spkT = np.load(os.path.join(root_dir,'spkT_task.npy'))
 
 
-    #This array is the same shape as spkT but shows which cluster each of the spikes in spkT belongs to
+    # This array is the same shape as spkT but shows which cluster each of the spikes in spkT belongs to
     spkC = np.load(os.path.join(root_dir,'spkC_task.npy'))
 
-    #This is basically a big table (you can open it in excel) which contains
-    #relevant information about each time the animal poked one of the ports
+    # This is basically a big table (you can open it in excel) which contains
+    # relevant information about each time the animal poked one of the ports
     task_event_df = pd.read_csv(os.path.join(root_dir,'task_event_table.csv'),index_col=0)
 
     #
@@ -35,7 +34,7 @@ def load_data(selected_session: int,by_dir: bool=False) -> Tuple[np.ndarray,
     #alternatively to change the time window
 
 
-    #not all cluster in spkC correspond to single units. Single units is an array of the clusters that are single units
+    # not all cluster in spkC correspond to single units. Single units is an array of the clusters that are single units
     single_units = np.load(os.path.join(root_dir,'single_units.npy'))
     
     

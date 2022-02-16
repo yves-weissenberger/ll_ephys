@@ -118,7 +118,9 @@ def get_mean_resps(all_resps_single_trial):
 
 
 def get_activity_for_each_poke(df: pd.DataFrame, spkT: np.ndarray, spkC: np.ndarray,
-                               single_units: np.ndarray, aligner, window0: int = 3000, window1: int = 6000):
+                               single_units: np.ndarray, aligner, 
+                               window0: int = 3000, window1: int = 6000
+                               ) -> np.ndarray:
     """ 
     This function takes in dataframes like the one produced by proc_beh.build_poke_df
     and returns spiking of all neurons searched for in single_units. Need to update this to
@@ -150,6 +152,54 @@ def get_activity_for_each_poke(df: pd.DataFrame, spkT: np.ndarray, spkC: np.ndar
                 tpk = aligned_T
                 spike_locs = np.logical_and(spk_unit>(tpk-window0),spk_unit<(tpk+window1))
                 nSpikes = len(np.where(spike_locs)[0])
+                firing_rate = scaleF*float(nSpikes)
+                spk_store.append(firing_rate)
+                used_pokes[nr] = 1
+            else:
+                spk_store.append(np.nan)
+        all_spk_store.append(spk_store)
+
+    return np.array(all_spk_store)
+
+
+def get_activity_for_each_poke_inpoke_to_outpoke(df: pd.DataFrame, spkT: np.ndarray, spkC: np.ndarray,
+                                                 single_units: np.ndarray, aligner,
+                                                 ) -> np.ndarray:
+    """ 
+    This function takes in dataframes like the one produced by proc_beh.build_poke_df
+    and returns spiking of all neurons searched for in single_units. Need to update this to
+    include indicies that are not nans
+
+    """
+
+    poke_dict = {}
+
+    for port_nr in np.unique(df['port'].values):
+        v = df.loc[(df['port']==port_nr)]['time'].values
+        poke_dict[str(port_nr)] = [float(i) for i in v]
+
+
+    #st = time.time()
+    used_pokes = np.zeros(len(df))
+    
+    all_spk_store = []
+
+    for unit in single_units:#
+        spk_unit = spkT[np.where(spkC==unit)[0]] #select all spikes that belong to this cell
+        spk_store = []
+        for nr,row in df.iterrows():
+            aligned_T_in = aligner.B_to_A(row['inpoke_time'])
+            aligned_T_out = aligner.B_to_A(row['outpoke_time'])
+            
+            if not np.isnan(aligned_T_out + aligned_T_in):
+
+
+                spike_locs = np.logical_and(spk_unit > aligned_T_in, 
+                                            spk_unit < aligned_T_out
+                                            )
+                nSpikes = len(np.where(spike_locs)[0])
+
+                scaleF  = (aligned_T_out - aligned_T_in)/30000.
                 firing_rate = scaleF*float(nSpikes)
                 spk_store.append(firing_rate)
                 used_pokes[nr] = 1

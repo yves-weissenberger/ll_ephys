@@ -1,12 +1,11 @@
-from typing import List
+from typing import List, Optional
 import re
-import os
 import copy as cp
-import sys 
+
 import numpy as np
 import pandas as pd
 
-def build_poke_df(lines,events,sync_thing=0):
+def build_poke_df(lines: List[str], events: Optional[np.ndarray], sync_thing=0):
         
     df = pd.DataFrame(columns=['target','port','state','task_nr','direction','probe','correct',
                             'previous_port','previous_state','reward','block_nr','task_repeat_nr','port_repeat','next_correct',

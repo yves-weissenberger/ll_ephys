@@ -1,6 +1,8 @@
 import numpy as  np
 from scipy.ndimage import gaussian_filter1d
-def build_spike_array(single_units,spkT,spkC):
+
+
+def build_spike_array(single_units, spkT, spkC):
 
     nUnits = len(single_units)
     maxT = int(np.ceil(np.max(spkT/30.)))
@@ -11,7 +13,9 @@ def build_spike_array(single_units,spkT,spkC):
     return spike_array
     
 
-def smooth_spike_array(spke_array,sigma=10):
+def smooth_spike_array(spike_array: np.ndarray,
+                       sigma: float = 10.
+                       ) -> np.ndarray:
     spike_smooth = []
     for i in spike_array:
         spike_smooth.append(gaussian_filter1d(i,sigma))

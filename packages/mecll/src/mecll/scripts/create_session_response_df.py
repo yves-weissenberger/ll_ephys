@@ -1,16 +1,10 @@
 import os
-import sys
-from unittest import result
 import numpy as np
 
 
-package_dir = os.path.split(os.path.split(os.path.abspath(__file__))[0])[0]
-sys.path.append(package_dir)
-
-
-from load import load_data
-from process_data.proc_beh import build_poke_df
-from process_data.proc_neural import get_activity_for_each_poke_inpoke_to_outpoke
+from mecll.load import load_data
+from mecll.process_data.proc_beh import build_poke_df
+from mecll.process_data.proc_neural import get_activity_for_each_poke_inpoke_to_outpoke
 
 
 def main(save_path: str) -> None:
@@ -32,7 +26,7 @@ def main(save_path: str) -> None:
             if not os.path.isdir(save_dir):
                 os.mkdir(save_dir)
             neural_save_path = os.path.join(save_dir, 'neural_response_table.npy')
-            beh_save_path = os.path.join(save_dir, 'task_event_table.npy')
+            beh_save_path = os.path.join(save_dir, 'task_event_table.csv')
             np.save(neural_save_path, poke_array)
             df.to_csv(beh_save_path)
         except:

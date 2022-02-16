@@ -5,10 +5,10 @@ from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
-from mecll.retreat_preprocess import get_task_responses_by_direction
 
-from .rsync import *
-from .retreat_preprocess import get_task_response_by_direction
+
+from mecll.rsync import *
+from mecll.retreat_preprocess import get_task_responses_by_direction
 
 
 

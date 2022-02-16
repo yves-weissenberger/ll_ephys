@@ -1,6 +1,0 @@
-{
-    "python.pythonPath": "/Users/yves/opt/anaconda3/bin/python",
-    "python.analysis.extraPaths": [
-        "./packages"
-    ]
-}

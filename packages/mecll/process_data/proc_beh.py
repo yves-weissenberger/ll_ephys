@@ -1,3 +1,4 @@
+from typing import List
 import re
 import os
 import copy as cp
@@ -6,19 +7,21 @@ import numpy as np
 import pandas as pd
 
 def build_poke_df(lines,events,sync_thing=0):
-    
+        
     df = pd.DataFrame(columns=['target','port','state','task_nr','direction','probe','correct',
-                               'previous_port','previous_state','reward','block_nr','task_repeat_nr','port_repeat','next_correct',
-                               'frac_corr','RT','time','current_sequence','graph_type' #behavioural variables
-                               #,'in_timeout','n_timeouts'
-                              ]) 
-    
+                            'previous_port','previous_state','reward','block_nr','task_repeat_nr','port_repeat','next_correct',
+                            'frac_corr','RT','inpoke_time','current_sequence','graph_type','outpoke_time' #behavioural variables
+                            #,'in_timeout','n_timeouts'
+                            ]) 
+
     all_poke_dict = []
     poke_dict = None
     target_hist = []
     rew_hist = []
     current_block_number = -1
     RT = 0
+    event_dict = eval(lines[9][2:])
+    inverse_event_dict = {v:k for k,v in event_dict.items()}
     for ctr_,l in enumerate(lines):
         if 'task_number'in l:
             #if poke_dict is not None:
@@ -40,7 +43,7 @@ def build_poke_df(lines,events,sync_thing=0):
             n_rew_in_seq = int(re.findall('REW_IN_SEQ:([0-9]*)',l)[0])
             direction = int(re.findall('DIR: (\-*\d+)',l)[0])
             #print(direction)
-            
+
             if len(df)>1:
                 previous_port = df.iloc[-1]['port']
                 if not df.iloc[-1]['correct']:
@@ -54,14 +57,14 @@ def build_poke_df(lines,events,sync_thing=0):
             else:
                 previous_port = None
                 current_is_repeat = False
-            
+
             n_rew =  int(re.findall('REWS:([0-9]*)',l)[0])
             #print(l)
             probe = bool(re.findall('PROBE: ([True|False])',l)[0]=='T')
             rew_hist.append(n_rew)
             target_hist.append(target)
-            
-                
+
+
             #print(current_sequence)
             if len(rew_hist)>1:
                 if len(df)>1:
@@ -70,36 +73,49 @@ def build_poke_df(lines,events,sync_thing=0):
                     else:
                         #df.loc[len(df)-1,'outgoing_angle'] = incoming_angle
                         RT = t_ - df.iloc[-1]['time']
-                    
             
+            outpoke_t = None
+            outpoke_event_str = 'poke_' + str(1+int(poke)) + '_out'
+            out_event_id = event_dict[outpoke_event_str]
+            
+            fwd_ctr = 0
+            while (ctr_+fwd_ctr)<len(lines) and outpoke_t is None:
+                #print()
+                if lines[ctr_+fwd_ctr][0]=='D' and re.findall(str(out_event_id)+'\n',lines[ctr_+fwd_ctr]):
+                    outpoke_t = int(re.findall('D\s([0-9]*)',lines[ctr_+fwd_ctr])[0])
+                fwd_ctr += 1
+            #break
+            #print(fwd_ctr)
             #print(current_sequence)
             if len(rew_hist)>2:
                 poke_dct = {
-                          'target': int(target),
-                          'port': int(poke),
-                          'state': current_sequence.index(int(poke)),
-                          'task_nr': current_task,
-                          'direction': direction,
-                          #'in_timeout': False,
-                          #'n_timeouts': np.nan,
-                          'probe': probe,
-                          'correct': poke==target,
-                          'reward': n_rew==rew_hist[-2],
-                          'block_nr':current_block_number,
-                          'task_repeat_nr': int(np.floor(current_block_number/2)),
-                          'frac_corr': None,
-                          'RT':RT,
-                          'time':t_,
-                          'current_sequence': current_sequence,
-                          'graph_type': current_graph_type,
-                          'port_repeat':current_is_repeat,
-                                  }
+                        'target': int(target),
+                        'port': int(poke),
+                        'state': current_sequence.index(int(poke)),
+                        'task_nr': current_task,
+                        'direction': direction,
+                        #'in_timeout': False,
+                        #'n_timeouts': np.nan,
+                        'probe': probe,
+                        'correct': poke==target,
+                        'reward': n_rew==rew_hist[-2],
+                        'block_nr':current_block_number,
+                        'task_repeat_nr': int(np.floor(current_block_number/2)),
+                        'frac_corr': None,
+                        'RT':RT,
+                        'time':t_,
+                        'current_sequence': current_sequence,
+                        'graph_type': current_graph_type,
+                        'port_repeat':current_is_repeat,
+                        'outpoke_time':outpoke_t,
+                        'inpoke_time': t_
+                            }
                 df = df.append(poke_dct,ignore_index=True)
 
        
     return df
     
-def get_in_task_pokes(lines,events,sync_thing=0):
+def get_in_task_pokes(lines: List[str], events, sync_thing=0):
     """ This builds a list of dictionaries about what happened in the task.
         Each dictionary contains the times of pokes in each of the ports 
         and some metadata about the currenct task (e.g. the structure of

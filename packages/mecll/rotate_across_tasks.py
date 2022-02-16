@@ -55,7 +55,8 @@ def get_rotation_correlations(task1: np.ndarray,
                               task2_ref: np.ndarray, 
                               by_neuron: bool=True) -> np.ndarray:
 
-    """Get maximal correlation rotating acros the two lines while moving around
+    """
+    Get maximal correlation rotating acros the two lines while moving around
        in one direction.
 
     Args:
@@ -65,13 +66,14 @@ def get_rotation_correlations(task1: np.ndarray,
 
     Returns:
         np.ndarray: Correlations at each rotation and with each possible flip
+
     """
     
     ccs = []
 
     # if there are lines we can just mask the invalid ones
-    task1 = np.ma.masked_invalid(task1)
-    task2_ref = np.ma.masked_invalid(task2_ref)
+    #task1 = np.ma.masked_invalid(task1)
+    #task2_ref = np.ma.masked_invalid(task2_ref)
     
     for roll_amount in range(9):
         # stores correlation coefficients averaged over neurons
@@ -86,8 +88,9 @@ def get_rotation_correlations(task1: np.ndarray,
             single_neuron_corr = []
             if by_neuron:
                 for n_task1, n_task2 in zip(task1,task2):
+
                     single_neuron_corr.append(nan_corrcoef(n_task1,n_task2)[0,1])
-                    cc_i = np.mean(single_neuron_corr)
+                cc_i = np.mean(single_neuron_corr)
             else:
                 cc_i = nan_corrcoef(task1.flatten(),task2.flatten())[0,1]
             roll_cc_store.append(cc_i)

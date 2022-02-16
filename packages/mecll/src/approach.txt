@@ -1,0 +1,2 @@
+build a big table of neurons. have helper functions in analyses
+in the analyses folder have analyses that add columns to the table

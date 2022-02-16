@@ -1,1 +1,0 @@
-import analyse_open_field

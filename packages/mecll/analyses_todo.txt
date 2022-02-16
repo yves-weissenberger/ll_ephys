@@ -1,3 +1,0 @@
-compare correct and incorrect sequence pokes
-- compare bases for task space and physical space and see which explain more variance
-    Lets do this one today

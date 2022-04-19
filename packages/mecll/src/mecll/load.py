@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 
-from mecll.rsync import *
+from mecll.rsync import Rsync_aligner
 from mecll.retreat_preprocess import get_task_responses_by_direction
 
 
@@ -115,24 +115,16 @@ def load_preprocessed_data(selected_session: int,
 
     # This is basically a big table (you can open it in excel) which contains
     # relevant information about each time the animal poked one of the ports
-    task_event_df = pd.read_csv(os.path.join(root_dir,'task_event_table.csv'),index_col=0)
+    task_event_df = pd.read_csv(os.path.join(root_dir,'task_event_table.npy'),index_col=0)
 
-    #
-    response_table = np.load(os.path.join(root_dir,'neuron_response_table.npy'))
-    #alternatively to change the time window
+    response_table = np.load(os.path.join(root_dir,'neural_response_table.npy')).T
 
-
-    #not all cluster in spkC correspond to single units. Single units is an array of the clusters that are single units
-    single_units = np.load(os.path.join(root_dir,'single_units.npy'))
-    
-    
     seq0 = np.array(eval(task_event_df.loc[task_event_df['task_nr']==0]['current_sequence'].values[0]))
     seq1 = np.array(eval(task_event_df.loc[task_event_df['task_nr']==1]['current_sequence'].values[0]))
     
     
     graph_type0 = task_event_df.loc[task_event_df['task_nr']==0]['graph_type'].values[0]
     graph_type1 = task_event_df.loc[task_event_df['task_nr']==0]['graph_type'].values[0]
-    
     firing_rate_maps = get_task_responses_by_direction(task_event_df,
                                                        response_table)
 

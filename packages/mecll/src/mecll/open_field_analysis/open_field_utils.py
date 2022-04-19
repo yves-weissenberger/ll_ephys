@@ -1,13 +1,14 @@
 import numpy as np
 from numba import jit
+
+
+
 # https://stackoverflow.com/questions/30399534/shift-elements-in-a-numpy-array
 def shift(array_to_shift, n):
     if n >= 0:
         return np.concatenate((np.full(n, np.nan), array_to_shift[:-n]))
     else:
         return np.concatenate((array_to_shift[-n:], np.full(-n, np.nan)))
-
-
 '''
 Shifts 2d array along given axis.
 array_to_shift : 2d array that is to be shifted

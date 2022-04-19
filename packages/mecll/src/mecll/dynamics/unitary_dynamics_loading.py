@@ -84,11 +84,8 @@ def get_task_responses(task_event_df: pd.DataFrame,response_table):
     """ 
     Use the columns of the task_event_df to filter neural activity. 
     In this example build separate firing rate maps for each of the
-    tasks, selecting only trials where subjects poked the correct poke.
-    
-    
+    tasks, selecting only trials where subjects poked the correct poke. 
     """
-    
     
     n_neurons = response_table.shape[1]
     n_ports = 9

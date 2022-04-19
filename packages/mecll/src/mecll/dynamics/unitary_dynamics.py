@@ -10,7 +10,9 @@ np_jnp_array = Union[np.ndarray,jnp.ndarray]
 
 
 def get_unique_transitions(seq0: np.ndarray, seq1: np.ndarray) -> np.ndarray:
-    """ Get transitions that are unique in physical space"""
+    """ Get transitions that are unique in physical space between the two
+        tasks
+    """
     test_seq1 = []
     for ix,i in enumerate(seq1):
         if seq0[(np.where(seq0==i)[0]-1)%9]!=seq1[(ix-1)%9]:
@@ -43,8 +45,10 @@ def get_basis_tensor(dim: int) -> np.array:
 
 
 
-def construct_M(skewM: np_jnp_array,dim: int) -> np_jnp_array:
-    """ Perform Caley transform"""
+def construct_M(skewM: np_jnp_array, dim: int) -> np_jnp_array:
+    """ Perform Caley transform to construct unitary matrix from skew 
+        symmetryic matrix
+    """
     if type(skewM)==np.ndarray:
         return (np.eye(dim) - skewM)@np.linalg.inv(np.eye(dim)+skewM)
     else:

@@ -91,7 +91,7 @@ def build_poke_df(lines: List[str], events: Optional[np.ndarray], sync_thing=0):
                         'target': int(target),
                         'port': int(poke),
                         'state': current_sequence.index(int(poke)),
-                        'task_nr': current_task,
+                        'task_nr': int(current_task),
                         'direction': direction,
                         #'in_timeout': False,
                         #'n_timeouts': np.nan,

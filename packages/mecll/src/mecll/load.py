@@ -25,6 +25,7 @@ def find_task_file(root_path: str) -> str:
     for f in os.listdir(root_path):
         if 'task_file_' in f:
             return f
+    raise FileNotFoundError("Expecting to hae a file with task_file_ in the name")
 
 
 def load_data(root_path,align_to='task',camera_frame_rate=30):
